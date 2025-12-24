@@ -1,59 +1,64 @@
-# PredictCAN
+## Vision fonctionnelle synthétique
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
+La plateforme permet à des utilisateurs authentifiés de :
 
-## Development server
+- Créer un compte et se connecter.
 
-To start a local development server, run:
+- Publier une prédiction de score avant le coup d’envoi d’un match.
 
-```bash
-ng serve
-```
+- Joindre une preuve horodatée (ex: capture d’écran de leur modèle).
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Modifier leur prédiction jusqu’au coup d’envoi uniquement.
 
-## Code scaffolding
+- Consulter les prédictions des autres utilisateurs après le coup d’envoi.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Recevoir automatiquement le résultat de leur prédiction à la fin du match.
 
-```bash
-ng generate component component-name
-```
+- Afficher un classement des gagnants (un ou plusieurs).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+⚠️ Contraintes clés
 
-```bash
-ng generate --help
-```
+[!IMPORTANT]
+Le respect de l'équité repose sur trois piliers fondamentaux :
 
-## Building
+- Verrouillage temporel strict : Interdiction de modifier ou de parier dès que le match débute.
 
-To build the project run:
+- Traçabilité des preuves : Archivage sécurisé des captures d'écran pour vérification.
 
-```bash
-ng build
-```
+- Résultats officiels et fiables : Intégration de données de confiance pour la clôture des matchs.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Rôle Administrateur — périmètre
 
-```bash
-ng test
-```
+L’administrateur peut :
 
-## Running end-to-end tests
+- gérer les utilisateurs,
 
-For end-to-end (e2e) testing, run:
+- gérer les matchs et leurs horaires,
 
-```bash
-ng e2e
-```
+- contrôler les prédictions et les preuves,
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- superviser les résultats et les gagnants,
 
-## Additional Resources
+- assurer la conformité et la modération,
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- suivre des indicateurs clés.
+
+
+ * ARCHITECTURE PROPOSÉE : CLEAN ARCHITECTURE (SANS BACKEND)
+ * * Structure des dossiers :
+ - src/app/
+ - ├── core/              <- DOMAIN & USE CASES (Cœur métier, indépendant d'Angular)
+ - │   ├── models/        <- Interfaces (Match, Prediction, User)
+ - │   ├── services/      <- Abstractions (Interfaces de repository)
+ - │   └── use-cases/     <- Logique métier pure (Valider une prédiction, calculer gagnant)
+ - ├── data/              <- INFRASTRUCTURE / ADAPTERS
+ - │   ├── repositories/  <- Implémentations concrètes (LocalStorage, MockAPI)
+ - │   └── mappers/       <- Transformation des données brutes en modèles du domaine
+ - ├── shared/            <- UI COMPONENTS & PIPES (Composants réutilisables)
+ - └── features/          <- PRESENTATION LAYER (Pages et logique de vue)
+ - ├── auth/
+ - ├── predictions/
+ - └── admin/
+

@@ -9,7 +9,7 @@ export class MatchRepository {
 
   getAllMatches() {
     return from(
-      this.supabase.matchesTable
+      this.supabase.getTable('matches')
         .select('*')
         .order('kickOffTime', { ascending: true })
     ).pipe(
@@ -22,9 +22,9 @@ export class MatchRepository {
 
   getUpcomingMatches() {
     return from(
-      this.supabase.matchesTable
+      this.supabase.getTable('matches')
         .select('*')
-        .eq('status', 'upcoming')
+        .eq('status', 'à venir')
         .order('kickOffTime', { ascending: true })
     ).pipe(
       map(({ data, error }) => {
@@ -35,14 +35,14 @@ export class MatchRepository {
   }
 
   createMatch(match: Match) {
-    return from(this.supabase.matchesTable.insert(match));
+    return from(this.supabase.getTable('matches').insert(match));
   }
 
   updateMatch(match: Match) {
-    return from(this.supabase.matchesTable.update(match));
+    return from(this.supabase.getTable('matches').update(match));
   }
 
   deleteMatch(id: string) {
-    return from(this.supabase.matchesTable.delete().eq('id', id));
+    return from(this.supabase.getTable('matches').delete().eq('id', id));
   }
 }

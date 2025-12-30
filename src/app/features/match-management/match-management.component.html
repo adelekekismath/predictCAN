@@ -1,0 +1,134 @@
+<div class="max-w-5xl mx-auto p-6 bg-gray-50 min-h-screen">
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-4">Gestion des Matchs</h2>
+
+  @if (isAdmin()) {
+    <section class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-10">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+        </span>
+        Ajouter un Nouveau Match
+      </h3>
+
+      <form [formGroup]="matchForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-gray-500 uppercase">Équipe 1</label>
+          <select formControlName="team_a" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white">
+            <option [ngValue]="null">Choisir une équipe...</option>
+            @for (team of teams(); track team.id) {
+              <option [value]="team.id">{{ team.team_name_fr }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-gray-500 uppercase">Équipe 2</label>
+          <select formControlName="team_b" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white">
+            <option [ngValue]="null">Choisir une équipe...</option>
+            @for (team of teams(); track team.id) {
+              <option [value]="team.id">{{ team.team_name_fr }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-gray-500 uppercase">Coup d'envoi</label>
+          <input type="datetime-local" formControlName="kickoff_time" class="w-full rounded-lg border-gray-300 p-2.5 border">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-gray-500 uppercase">Étape</label>
+          <select formControlName="stage" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white">
+            @for (stage of stages; track stage) {
+              <option [value]="stage">{{ stage }}</option>
+            }
+          </select>
+        </div>
+
+        <button type="submit" [disabled]="matchForm.invalid"
+                class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all">
+          Enregistrer
+        </button>
+      </form>
+    </section>
+  }
+
+  <div class="space-y-6">
+    @if (loading()) {
+      <div class="flex justify-center p-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      @for (match of matches(); track match.id) {
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 transition-all hover:shadow-lg"
+             [class.border-l-red-500]="match.status === 'live'"
+             [class.border-l-gray-300]="match.status !== 'live'">
+
+          <div class="p-5">
+            <div class="flex justify-between items-center mb-6">
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+                    [class]="match.status === 'live' ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-gray-100 text-gray-600'">
+                ● {{ match.status }}
+              </span>
+              <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">
+                {{ match.stage }}
+              </span>
+              <span class="text-sm font-medium text-gray-400">
+                {{ match.kickoff_time | date:'dd MMM yyyy HH:mm' }}
+              </span>
+            </div>
+
+            <div class="flex justify-around items-center text-center">
+              <div class="flex-1 space-y-2">
+                <div class="text-sm font-bold text-gray-500 uppercase">{{ match.team_a_data?.team_name_fr }}</div>
+                <div class="text-4xl font-black text-gray-800">{{ match.score_a }}</div>
+
+                @if (isAdmin()) {
+                  <div class="flex justify-center space-x-2 mt-2">
+                    <button (click)="updateScore(match.id, 'a', 1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">+</button>
+                    <button (click)="updateScore(match.id, 'a', -1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">-</button>
+                  </div>
+                }
+              </div>
+
+              <div class="px-4 text-xl font-black text-gray-300 italic">VS</div>
+
+              <div class="flex-1 space-y-2">
+                <div class="text-sm font-bold text-gray-500 uppercase">{{ match.team_b_data?.team_name_fr }}</div>
+                <div class="text-4xl font-black text-gray-800">{{ match.score_b }}</div>
+
+                @if (isAdmin()) {
+                  <div class="flex justify-center space-x-2 mt-2">
+                    <button (click)="updateScore(match.id, 'b', 1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">+</button>
+                    <button (click)="updateScore(match.id, 'b', -1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">-</button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            @if (isAdmin()) {
+              <div class="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+                <button (click)="deleteMatch(match.id)"
+                        class="text-red-500 hover:text-red-700 text-sm font-semibold flex items-center transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Supprimer le match
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="col-span-full text-center py-20 bg-white rounded-xl border-2 border-dashed border-gray-200">
+          <p class="text-gray-400 font-medium">Aucun match prévu pour le moment.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

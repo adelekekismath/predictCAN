@@ -7,6 +7,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>
           </svg>
+
         </div>
         <span class="text-xl sm:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
           PRONO<span class="text-emerald-400">LAB</span>
@@ -21,22 +22,28 @@
       </div>
 
       <!-- Actions Desktop -->
-      <div class="hidden md:flex items-center gap-4">
-        <button class="text-sm font-semibold hover:text-emerald-400 transition-colors">Connexion</button>
-        <button class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105">
+      @if(!isAuthenticated()){
+        <div class="hidden md:flex items-center gap-4">
+        <button (click)="login()" class="text-sm text-white "> Connexion</button>
+        <button (click)="register()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105">
           Rejoindre
         </button>
       </div>
+      }
+      @else {
+        <button (click)="logout()" class="text-sm text-white "> Deconnexion</button>
+      }
+
 
       <!-- Mobile Menu Button (Visible uniquement sur mobile) -->
       <div class="md:hidden flex items-center gap-4">
-        <button class="text-xs font-bold text-emerald-400 border border-emerald-400/30 px-3 py-1.5 rounded-full">Rejoindre</button>
+        <button (click)="register()" class="text-xs font-bold text-emerald-400 border border-emerald-400/30 px-3 py-1.5 rounded-full">Rejoindre</button>
         <button (click)="toggleMenu()" class="text-white p-2 focus:outline-none">
           <svg *ngIf="!isMenuOpen()" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
           </svg>
           <svg *ngIf="isMenuOpen()" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <path cxstroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -49,8 +56,8 @@
     <a href="#" class="block text-lg font-medium text-white hover:text-emerald-400 py-2">Experts</a>
     <a href="#" class="block text-lg font-medium text-white hover:text-emerald-400 py-2">Classement</a>
     <div class="pt-4 border-t border-white/5 flex flex-col gap-4">
-      <button class="w-full text-center py-3 text-slate-400 font-semibold">Connexion</button>
-      <button class="w-full bg-emerald-500 text-slate-950 py-4 rounded-2xl font-black">REJOINDRE LA COMMUNAUTÉ</button>
+      <button (click)="login()" class="w-full text-center py-3 text-slate-400 font-semibold">Connexion</button>
+      <button (click)="register()" class="w-full bg-emerald-500 text-slate-950 py-4 rounded-2xl font-black">REJOINDRE LA COMMUNAUTÉ</button>
     </div>
   </div>
 </nav>

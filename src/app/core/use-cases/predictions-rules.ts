@@ -12,8 +12,8 @@ export class PredictionRules {
    */
   static canSubmitOrModify(match: Match): boolean {
     const now = new Date();
-    const isUpcoming = match.status === 'upcoming';
-    const isBeforeKickoff = now.getTime() < new Date(match.kickOffTime).getTime();
+    const isUpcoming = match.status === 'à venir';
+    const isBeforeKickoff = now.getTime() < new Date(match.kickoff_time).getTime();
 
     return isUpcoming && isBeforeKickoff;
   }

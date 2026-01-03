@@ -19,7 +19,7 @@ export const routes: Routes = [
     loadComponent: () => import('../app/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent)
    },
    {
-    path: 'match-manager',
-    loadComponent: () => import('../app/features/match-management/match-management.component').then(m => m.MatchManagementComponent)
+    path: 'match',
+    loadComponent: () => import('./features/match/match.component').then(m => m.MatchComponent)
    }
 ];

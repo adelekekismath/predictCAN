@@ -25,7 +25,7 @@ export class PredictionRules {
    */
   static canViewOthersPredictions(match: Match): boolean {
     const now = new Date();
-    return now.getTime() >= new Date(match.kickOffTime).getTime();
+    return now.getTime() >= new Date(match.kickoff_time).getTime();
   }
 
   /**

@@ -11,7 +11,7 @@ export class AuthCallbackComponent implements OnInit {
     // On attend que l'utilisateur soit détecté par l'AuthService
     this.authService.currentUser$.subscribe(user => {
       if (user) {
-        this.router.navigate(['/dashboard']); // Redirection après succès
+        this.router.navigate(['/match']); // Redirection après succès
       }
     });
   }

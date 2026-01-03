@@ -1,93 +1,64 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule ,ReactiveFormsModule} from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-auth',
-  imports: [CommonModule, ɵInternalFormsSharedModule,ReactiveFormsModule],
+  standalone: true, // Recommandé pour les nouveaux composants
+  imports: [CommonModule, ReactiveFormsModule], // Nettoyage ici
   templateUrl: './auth.component.html',
-  styles: [`
-    :host {
-      display: block;
-    }
-    @keyframes fade-in {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-in {
-      animation: fade-in 0.4s ease-out forwards;
-    }
-  `]
+  styleUrls: ['./auth.component.css'] // Ou gardez vos styles inline
 })
 export class AuthComponent implements OnInit {
+  // --- Injections ---
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
+  // --- État (Signals) ---
+  // On crée un signal qui écoute l'URL en temps réel
+  modeFromUrl = toSignal(
+    this.route.queryParamMap.pipe(map(params => params.get('mode')))
+  );
+
   activeTab = signal<'login' | 'register'>('login');
   isAdminMode = signal<boolean>(false);
-  private fb = inject(FormBuilder);
-  loginForm: FormGroup;
 
-  constructor(private authService: AuthService, private route: ActivatedRoute, private router: Router) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
-    })
-  }
+  // --- Formulaire ---
+  loginForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]]
+  });
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe( paramMap => {
-        this.activeTab.set(paramMap.get('mode') as 'login' | 'register');
+    const mode = this.modeFromUrl();
+    if (mode === 'login' || mode === 'register') {
+      this.activeTab.set(mode);
+    }
+  }
+
+  authWith(provider: 'google' | 'facebook') {
+    this.authService.signInWithProvider(provider).subscribe({
+      next: () => console.log(`${this.activeTab()} réussi via ${provider}`),
+      error: (err) => console.error(err)
     });
   }
 
-  authWith(provider: 'google' |'facebook') {
-    if(this.activeTab() === 'login') {
-      this.loginWith(provider);
-    } else {
-      this.registerWith(provider);
-    }
-  }
-
-  loginWith(provider: 'google' |'facebook') {
-    this.authService.signInWithProvider(provider).subscribe(
-      {
-        next: () => {
-          console.log("Connexion réussie");
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
-  }
-
-  registerWith(provider: 'google' |'facebook') {
-    this.authService.signInWithProvider(provider).subscribe(
-      {
-        next: () => {
-          console.log("Inscription réussie");
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
-  }
   loginInAsAdmin() {
-    this.authService.loginAsAdminWithEmailAndPassword(
-      this.loginForm.value.email,
-      this.loginForm.value.password
-    ).subscribe(
-      {
-        next: () => {
-          console.log("Connexion réussie");
-          this.router.navigate(['match-manager']);
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
-  }
+    if (this.loginForm.invalid) return;
 
+    const { email, password } = this.loginForm.getRawValue();
+    this.authService.loginAsAdminWithEmailAndPassword(email, password).subscribe({
+      next: () => {
+        console.log("Connexion Admin réussie");
+        this.router.navigate(['/match']);
+      },
+      error: (error) => console.error("Erreur login admin:", error)
+    });
+  }
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MatchManagementComponent } from './match-management.component';
+import { MatchComponent } from './match.component';
 
-describe('MatchManagementComponent', () => {
-  let component: MatchManagementComponent;
-  let fixture: ComponentFixture<MatchManagementComponent>;
+describe('MatchComponent', () => {
+  let component: MatchComponent;
+  let fixture: ComponentFixture<MatchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatchManagementComponent]
+      imports: [MatchComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MatchManagementComponent);
+    fixture = TestBed.createComponent(MatchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

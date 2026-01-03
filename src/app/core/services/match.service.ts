@@ -4,10 +4,12 @@ import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { from, Observable, map } from 'rxjs';
 import { Match } from '../models/match';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class MatchService {
   private supabase = inject(SupabaseService);
+  private authService = inject(AuthService);
   private readonly TABLE_NAME = 'matches';
 
 
@@ -51,6 +53,34 @@ getMatchesWithNames(): Observable<any[]> {
         team_b_data:can_2025_teams!team_b(team_name_fr)
       `)
   ).pipe(map(({ data }) => data || []));
+}
+
+  updateMatchStatus(id: string, status: string): Observable<any> {
+    return from(
+      this.supabase.supabase
+        .from('matches')
+        .update({ status })
+        .eq('id', id)
+    ).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+        return true;
+      })
+    );
+  }
+
+  savePrediction(matchId: string, scoreA: number, scoreB: number) {
+  return from(
+    this.supabase.supabase
+      .from('predictions')
+      .upsert({
+        match_id: matchId,
+        user_id: this.authService.currentUserId,
+        score_a: scoreA,
+        score_b: scoreB,
+        updated_at: new Date()
+      })
+  );
 }
 
   createMatch(match: Partial<Match>): Observable<void> {

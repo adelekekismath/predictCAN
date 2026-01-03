@@ -1,11 +1,11 @@
 export interface Prediction {
-  id: string;
-  userId: string;
+  id?: string;
+  userId?: string;
   matchId: string;
   predictedTeamAScore: number;
   predictedTeamBScore: number;
   proofUrl: string;
-  timestamp: Date;
+  timestamp?: Date;
 }
 
 export interface Result {

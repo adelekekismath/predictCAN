@@ -1,261 +1,440 @@
 <div class="max-w-5xl mx-auto p-6 bg-gray-50 min-h-screen">
-  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-4">Gestion des Matchs</h2>
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-4">
+    Gestion des Matchs
+  </h2>
 
   @if (isAdmin()) {
-    <section class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-10">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-          </svg>
-        </span>
-        Ajouter un Nouveau Match
-      </h3>
+  <section
+    class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-10"
+  >
+    <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+      <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </span>
+      Ajouter un Nouveau Match
+    </h3>
 
-      <form [formGroup]="matchForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+    <form
+      [formGroup]="matchForm"
+      (ngSubmit)="onSubmit()"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end"
+    >
+      <div class="space-y-1">
+        <label class="text-xs font-bold text-gray-500 uppercase"
+          >Équipe 1</label
+        >
+        <select
+          formControlName="team_a"
+          class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white"
+        >
+          <option [ngValue]="null">Choisir une équipe...</option>
+          @for (team of teams(); track team.id) {
+          <option [value]="team.id">{{ team.team_name_fr }}</option>
+          }
+        </select>
+      </div>
 
-        <div class="space-y-1">
-          <label class="text-xs font-bold text-gray-500 uppercase">Équipe 1</label>
-          <select formControlName="team_a" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white">
-            <option [ngValue]="null">Choisir une équipe...</option>
-            @for (team of teams(); track team.id) {
-              <option [value]="team.id">{{ team.team_name_fr }}</option>
-            }
-          </select>
-        </div>
+      <div class="space-y-1">
+        <label class="text-xs font-bold text-gray-500 uppercase"
+          >Équipe 2</label
+        >
+        <select
+          formControlName="team_b"
+          class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white"
+        >
+          <option [ngValue]="null">Choisir une équipe...</option>
+          @for (team of teams(); track team.id) {
+          <option [value]="team.id">{{ team.team_name_fr }}</option>
+          }
+        </select>
+      </div>
 
-        <div class="space-y-1">
-          <label class="text-xs font-bold text-gray-500 uppercase">Équipe 2</label>
-          <select formControlName="team_b" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white">
-            <option [ngValue]="null">Choisir une équipe...</option>
-            @for (team of teams(); track team.id) {
-              <option [value]="team.id">{{ team.team_name_fr }}</option>
-            }
-          </select>
-        </div>
+      <div class="space-y-1">
+        <label class="text-xs font-bold text-gray-500 uppercase"
+          >Coup d'envoi</label
+        >
+        <input
+          type="datetime-local"
+          formControlName="kickoff_time"
+          class="w-full rounded-lg border-gray-300 p-2.5 border"
+        />
+      </div>
 
-        <div class="space-y-1">
-          <label class="text-xs font-bold text-gray-500 uppercase">Coup d'envoi</label>
-          <input type="datetime-local" formControlName="kickoff_time" class="w-full rounded-lg border-gray-300 p-2.5 border">
-        </div>
+      <div class="space-y-1">
+        <label class="text-xs font-bold text-gray-500 uppercase">Étape</label>
+        <select
+          formControlName="stage"
+          class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white"
+        >
+          @for (stage of stages; track stage) {
+          <option [value]="stage">{{ stage }}</option>
+          }
+        </select>
+      </div>
 
-        <div class="space-y-1">
-          <label class="text-xs font-bold text-gray-500 uppercase">Étape</label>
-          <select formControlName="stage" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 p-2.5 border bg-white">
-            @for (stage of stages; track stage) {
-              <option [value]="stage">{{ stage }}</option>
-            }
-          </select>
-        </div>
-
-        <button type="submit" [disabled]="matchForm.invalid"
-                class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all">
-          Enregistrer
-        </button>
-      </form>
-    </section>
+      <button
+        type="submit"
+        [disabled]="matchForm.invalid"
+        class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all"
+      >
+        Enregistrer
+      </button>
+    </form>
+  </section>
   }
 
   <div class="space-y-6">
     @if (loading()) {
-      <div class="flex justify-center p-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
+    <div class="flex justify-center p-12">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"
+      ></div>
+    </div>
     }
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       @for (match of matches(); track match.id) {
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 transition-all hover:shadow-lg"
-             [class.border-l-red-500]="match.status === 'en direct'"
-              [class.border-l-green-500]="match.status === 'terminé'"
-             [class.border-l-gray-300]="match.status === 'à venir'">
-
-          <div class="p-5">
-            <div class="flex justify-between items-center mb-6">
-              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5"
+      <div
+        class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 transition-all hover:shadow-lg"
+        [class.border-l-red-500]="match.status === 'en direct'"
+        [class.border-l-green-500]="match.status === 'terminé'"
+        [class.border-l-gray-300]="match.status === 'à venir'"
+      >
+        <div class="p-5">
+          <div class="flex justify-between items-center mb-6">
+            <span
+              class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5"
+              [ngClass]="{
+                'bg-red-100 text-red-600 animate-pulse':
+                  match.status === 'en direct',
+                'bg-emerald-100 text-emerald-600': match.status === 'terminé',
+                'bg-gray-100 text-gray-500': match.status === 'à venir'
+              }"
+            >
+              <span
+                class="text-[8px]"
                 [ngClass]="{
-                  'bg-red-100 text-red-600 animate-pulse': match.status === 'en direct',
-                  'bg-emerald-100 text-emerald-600': match.status === 'terminé',
-                  'bg-gray-100 text-gray-500': match.status === 'à venir'
-                }">
-                <span class="text-[8px]"
-                      [ngClass]="{
-                        'text-red-500': match.status === 'en direct',
-                        'text-emerald-500': match.status === 'terminé',
-                        'text-gray-400': match.status === 'à venir'
-                      }">●</span>
-                {{ match.status }}
-              </span>
-              <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">
-                {{ match.stage }}
-              </span>
-              <span class="text-sm font-medium text-gray-400">
-                {{ match.kickoff_time | date:'dd MMM yyyy HH:mm' }}
-              </span>
-            </div>
+                  'text-red-500': match.status === 'en direct',
+                  'text-emerald-500': match.status === 'terminé',
+                  'text-gray-400': match.status === 'à venir'
+                }"
+                >●</span
+              >
+              {{ match.status }}
+            </span>
+            <span
+              class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest"
+            >
+              {{ match.stage }}
+            </span>
+            <span class="text-sm font-medium text-gray-400">
+              {{ match.kickoff_time | date : "dd MMM yyyy HH:mm" }}
+            </span>
+          </div>
 
-            <div class="flex justify-around items-center text-center">
-              <div class="flex-1 space-y-2">
-                <div class="text-sm font-bold text-gray-500 uppercase">{{ match.team_a_data?.team_name_fr }}</div>
-                <div class="text-4xl font-black text-gray-800">{{ match.score_a }}</div>
-
-                @if (isAdmin()) {
-                  <div class="flex justify-center space-x-2 mt-2">
-                    <button (click)="updateScore(match.id, 'a', 1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">+</button>
-                    <button (click)="updateScore(match.id, 'a', -1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">-</button>
-                  </div>
-                }
+          <div class="flex justify-around items-center text-center">
+            <div class="flex-1 space-y-2">
+              <div class="text-sm font-bold text-gray-500 uppercase">
+                {{ match.team_a_data?.team_name_fr }}
+              </div>
+              <div class="text-4xl font-black text-gray-800">
+                {{ match.score_a }}
               </div>
 
-              <div class="px-4 text-xl font-black text-gray-300 italic">VS</div>
-
-              <div class="flex-1 space-y-2">
-                <div class="text-sm font-bold text-gray-500 uppercase">{{ match.team_b_data?.team_name_fr }}</div>
-                <div class="text-4xl font-black text-gray-800">{{ match.score_b }}</div>
-
-                @if (isAdmin()) {
-                  <div class="flex justify-center space-x-2 mt-2">
-                    <button (click)="updateScore(match.id, 'b', 1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">+</button>
-                    <button (click)="updateScore(match.id, 'b', -1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600">-</button>
-                  </div>
-                }
-              </div>
-            </div>
-            <div class="p-5 border-t border-gray-100 bg-gray-50/50">
-  @let prono = getMatchPrediction(match.id);
-
-
-
-    @if (checkCanPredict(match) && !prono) {
-      <div class="p-4 bg-white rounded-xl border-2 border-indigo-100 animate-in fade-in">
-        <h4 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3">Soumettre un Pronostic</h4>
-        <div class="space-y-4">
-          <div class="flex items-center justify-center gap-4">
-            <input #sA type="number" placeholder="0" class="w-14 h-12 text-center text-xl font-bold rounded-lg border-gray-200 focus:ring-2 focus:ring-indigo-500">
-            <span class="text-gray-300 font-bold">VS</span>
-            <input #sB type="number" placeholder="0" class="w-14 h-12 text-center text-xl font-bold rounded-lg border-gray-200 focus:ring-2 focus:ring-indigo-500">
-          </div>
-          <div class="space-y-4">
-  <div class="relative">
-    <label class="text-[9px] font-black text-gray-500 uppercase ml-1">Capture d'écran de la preuve</label>
-    <div class="mt-1 flex items-center justify-center w-full">
-      <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-200 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-          <svg class="w-6 h-6 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-          <p class="text-[10px] text-gray-500"><span class="font-black">Cliquez pour uploader</span> ou glissez l'image</p>
-        </div>
-        <input #fileInput type="file" accept="image/*" class="hidden" (change)="onFileSelected($event)" />
-      </label>
-    </div>
-    @if (selectedFile) {
-      <p class="text-[8px] text-emerald-600 font-bold mt-1">✓ Fichier prêt : {{ selectedFile.name }}</p>
-    }
-  </div>
-
-  <button (click)="handleUploadAndSubmit(match, sA.value, sB.value)"
-          [disabled]="!selectedFile || isUploading"
-          class="w-full bg-indigo-600 text-white text-xs font-black py-3 rounded-lg hover:bg-indigo-700 disabled:opacity-50 flex justify-center items-center">
-    @if (isUploading) {
-      <span class="animate-spin mr-2">◌</span> Envoi de la preuve...
-    } @else {
-      VALIDER LE PRONOSTIC
-    }
-  </button>
-</div>
-          <button (click)="onPredict(match, sA.value, sB.value, fileInput.value)"
-                  class="w-full bg-indigo-600 text-white text-xs font-black py-3 rounded-lg hover:bg-indigo-700 transition-all">
-            ENREGISTRER
-          </button>
-        </div>
-      </div>
-    }
-
-    @if (prono) {
-      <div class="space-y-3">
-
-        @if (match.status === 'à venir') {
-          <div class="p-3 bg-indigo-600 rounded-xl text-white shadow-lg">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-[9px] font-bold uppercase opacity-80">Ton Prono</span>
-              <span class="text-[9px] font-bold uppercase bg-white/20 px-2 py-0.5 rounded">Enregistré</span>
-            </div>
-            <div class="text-center text-2xl font-black">
-              {{ prono.predictedTeamAScore }} — {{ prono.predictedTeamBScore }}
-            </div>
-            @if (checkCanPredict(match)) {
-                <button class="text-[8px] uppercase font-bold mt-2 opacity-70 hover:opacity-100 underline w-full">Modifier mon choix</button>
-            }
-          </div>
-        }
-
-        @if (match.status === 'terminé') {
-          @let pts = getPoints(match, prono);
-          <div class="p-4 rounded-xl border-2 flex justify-between items-center"
-               [class]="pts > 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-gray-50 border-gray-100'">
-            <div>
-              <span class="text-[9px] font-black text-gray-400 uppercase">Résultat Prono</span>
-              <div class="text-lg font-black text-gray-800">
-                {{ prono.predictedTeamAScore }} - {{ prono.predictedTeamBScore }}
-              </div>
-              <p class="text-[10px] font-bold mt-1" [class]="pts > 0 ? 'text-emerald-600' : 'text-gray-400'">
-                {{ pts === 5 ? '🔥 SCORE EXACT' : pts === 2 ? '✅ BON VAINQUEUR' : '❌ ÉCHEC' }}
-              </p>
-            </div>
-            <div class="text-right">
-              <span class="text-3xl font-black" [class]="pts > 0 ? 'text-emerald-600' : 'text-gray-400'">+{{ pts }}</span>
-              <span class="block text-[10px] font-bold text-gray-500">POINTS</span>
-            </div>
-          </div>
-        }
-
-      </div>
-    }
-
-
-  @if (canViewOthers(match)) {
-    <button class="mt-4 w-full py-2 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:bg-gray-100 transition-colors">
-      Consulter les autres prédictions
-    </button>
-  }
-</div>
-
-            @if (isAdmin()) {
-              <div class="mt-6 flex flex-col gap-2">
-
-                @if (match.status === 'à venir') {
-                  <button (click)="startMatch(match.id!)"
-                          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg flex items-center justify-center transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Démarrer le match
-                  </button>
-                }
-
-                @else if (match.status === 'en direct') {
-                  <button (click)="finishMatch(match.id!)"
-                          class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg flex items-center justify-center transition-colors shadow-lg shadow-red-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                    </svg>
-                    Terminer le match
-                  </button>
-                }
-
-                <button (click)="deleteMatch(match.id)"
-                        class="text-gray-400 hover:text-red-500 text-[10px] uppercase font-bold tracking-widest mt-2 transition-colors">
-                  Supprimer la fiche
+              @if (isAdmin()) {
+              <div class="flex justify-center space-x-2 mt-2">
+                <button
+                  (click)="updateScore(match.id, 'a', 1)"
+                  class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600"
+                >
+                  +
+                </button>
+                <button
+                  (click)="updateScore(match.id, 'a', -1)"
+                  class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600"
+                >
+                  -
                 </button>
               </div>
+              }
+            </div>
+
+            <div class="px-4 text-xl font-black text-gray-300 italic">VS</div>
+
+            <div class="flex-1 space-y-2">
+              <div class="text-sm font-bold text-gray-500 uppercase">
+                {{ match.team_b_data?.team_name_fr }}
+              </div>
+              <div class="text-4xl font-black text-gray-800">
+                {{ match.score_b }}
+              </div>
+
+              @if (isAdmin()) {
+              <div class="flex justify-center space-x-2 mt-2">
+                <button
+                  (click)="updateScore(match.id, 'b', 1)"
+                  class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600"
+                >
+                  +
+                </button>
+                <button
+                  (click)="updateScore(match.id, 'b', -1)"
+                  class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600"
+                >
+                  -
+                </button>
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="p-5 border-t border-gray-100 bg-gray-50/50">
+            @let prono = getMatchPrediction(match.id); @if
+            (checkCanPredict(match) ) {
+            <div
+              class="p-4 bg-white rounded-xl border-2 border-indigo-100 animate-in fade-in"
+            >
+              <h4
+                class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3"
+              >
+                Soumettre un Pronostic
+              </h4>
+              <div class="space-y-4">
+                <div class="flex items-center justify-center gap-4">
+                  <input
+                    #sA
+                    type="number"
+                    placeholder="0"
+                    class="w-14 h-12 text-center text-xl font-bold rounded-lg border-gray-200 focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <span class="text-gray-300 font-bold">VS</span>
+                  <input
+                    #sB
+                    type="number"
+                    placeholder="0"
+                    class="w-14 h-12 text-center text-xl font-bold rounded-lg border-gray-200 focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div class="space-y-4">
+                  <div class="relative">
+                    <label
+                      class="text-[9px] font-black text-gray-500 uppercase ml-1"
+                      >Capture d'écran de la preuve</label
+                    >
+                    <div class="mt-1 flex items-center justify-center w-full">
+                      <label
+                        class="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-200 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                      >
+                        <div
+                          class="flex flex-col items-center justify-center pt-5 pb-6"
+                        >
+                          <svg
+                            class="w-6 h-6 mb-2 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                            />
+                          </svg>
+                          <p class="text-[10px] text-gray-500">
+                            <span class="font-black"
+                              >Cliquez pour uploader</span
+                            >
+                            ou glissez l'image
+                          </p>
+                        </div>
+                        <input
+                          #fileInput
+                          type="file"
+                          accept="image/*"
+                          class="hidden"
+                          (change)="onFileSelected($event, match.id!)"
+                        />
+                      </label>
+                    </div>
+                    @let currentFile = getFileForMatch(match.id);
+                    @if(currentFile) {
+                    <p
+                      class="text-[8px] text-emerald-600 font-bold mt-1 text-center italic"
+                    >
+                      ✓ Fichier prêt pour ce match : {{ currentFile.name }}
+                    </p>
+                    }
+                  </div>
+
+              
+                </div>
+                <button
+                  (click)="
+                    onPredict(match, sA, sB, fileInput)
+                  "
+                  class="w-full bg-indigo-600 text-white text-xs font-black py-3 rounded-lg hover:bg-indigo-700 transition-all"
+                >
+                  ENREGISTRER
+                </button>
+              </div>
+            </div>
+            } @if (prono) {
+            <div class="space-y-3">
+              @if (match.status === 'à venir') {
+              <div class="p-3 bg-indigo-600 rounded-xl text-white shadow-lg">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[9px] font-bold uppercase opacity-80"
+                    >Ton Prono</span
+                  >
+                  <span
+                    class="text-[9px] font-bold uppercase bg-white/20 px-2 py-0.5 rounded"
+                    >Enregistré</span
+                  >
+                </div>
+                <div class="text-center text-2xl font-black">
+                  {{ prono.score_a }} — {{ prono.score_b }}
+                </div>
+              </div>
+              } @if (match.status === 'terminé') { @let pts = getPoints(match,
+              prono);
+              <div
+                class="p-4 rounded-xl border-2 flex justify-between items-center"
+                [class]="
+                  pts > 0
+                    ? 'bg-emerald-50 border-emerald-100'
+                    : 'bg-gray-50 border-gray-100'
+                "
+              >
+                <div>
+                  <span class="text-[9px] font-black text-gray-400 uppercase"
+                    >Résultat Prono</span
+                  >
+                  <div class="text-lg font-black text-gray-800">
+                    {{ prono.score_a }} - {{ prono.score_b }}
+                  </div>
+                  <p
+                    class="text-[10px] font-bold mt-1"
+                    [class]="pts > 0 ? 'text-emerald-600' : 'text-gray-400'"
+                  >
+                    {{
+                      pts === 5
+                        ? "🔥 SCORE EXACT"
+                        : pts === 2
+                        ? "✅ BON VAINQUEUR"
+                        : "❌ ÉCHEC"
+                    }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <span
+                    class="text-3xl font-black"
+                    [class]="pts > 0 ? 'text-emerald-600' : 'text-gray-400'"
+                    >+{{ pts }}</span
+                  >
+                  <span class="block text-[10px] font-bold text-gray-500"
+                    >POINTS</span
+                  >
+                </div>
+              </div>
+              }
+            </div>
+            } @if (canViewOthers(match)) {
+            <button
+              class="mt-4 w-full py-2 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:bg-gray-100 transition-colors"
+            >
+              Consulter les autres prédictions
+            </button>
             }
           </div>
+
+          @if (isAdmin()) {
+          <div class="mt-6 flex flex-col gap-2">
+            @if (match.status === 'à venir') {
+            <button
+              (click)="startMatch(match.id!)"
+              class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg flex items-center justify-center transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Démarrer le match
+            </button>
+            } @else if (match.status === 'en direct') {
+            <button
+              (click)="finishMatch(match.id!)"
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg flex items-center justify-center transition-colors shadow-lg shadow-red-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                />
+              </svg>
+              Terminer le match
+            </button>
+            }
+
+            <button
+              (click)="deleteMatch(match.id)"
+              class="text-gray-400 hover:text-red-500 text-[10px] uppercase font-bold tracking-widest mt-2 transition-colors"
+            >
+              Supprimer la fiche
+            </button>
+          </div>
+          }
         </div>
+      </div>
       } @empty {
-        <div class="col-span-full text-center py-20 bg-white rounded-xl border-2 border-dashed border-gray-200">
-          <p class="text-gray-400 font-medium">Aucun match prévu pour le moment.</p>
-        </div>
+      <div
+        class="col-span-full text-center py-20 bg-white rounded-xl border-2 border-dashed border-gray-200"
+      >
+        <p class="text-gray-400 font-medium">
+          Aucun match prévu pour le moment.
+        </p>
+      </div>
       }
     </div>
   </div>

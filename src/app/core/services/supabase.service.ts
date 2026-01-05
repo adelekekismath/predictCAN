@@ -47,7 +47,7 @@ export class SupabaseService {
         const { data: publicUrl } = this.supabase.storage
           .from('proofs')
           .getPublicUrl(fileName);
-
+        console.log('Public URL:', publicUrl);
         return of(publicUrl.publicUrl);
       })
     );
@@ -61,7 +61,7 @@ export class SupabaseService {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: provider === 'google' ? {
             access_type: 'offline',
-            prompt: 'consent', 
+            prompt: 'consent',
           } : undefined,
         },
       })

@@ -20,8 +20,8 @@ export class PredictionService {
     const prediction = {
       match_id: match.id,
       user_id: this.authService.currentUserId,
-      score_a: newPrediction.predictedTeamAScore,
-      score_b: newPrediction.predictedTeamBScore,
+      score_a: newPrediction.score_a,
+      score_b: newPrediction.score_b,
       proof_url: newPrediction.proofUrl,
       updated_at: new Date()
     };
@@ -35,6 +35,16 @@ export class PredictionService {
         .from('predictions')
         .upsert(prediction, { onConflict: 'user_id,match_id' })
     );
+  }
+
+  getCurrentUserPredictions(): Observable<any[]> {
+    const userId = this.authService.currentUserId;
+    return from(
+      this.supabase.supabase
+        .from('predictions')
+        .select('*')
+        .eq('user_id', userId)
+    ).pipe(map(res => res.data || []));
   }
 
 

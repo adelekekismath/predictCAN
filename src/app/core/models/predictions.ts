@@ -1,9 +1,9 @@
 export interface Prediction {
   id?: string;
   userId?: string;
-  matchId: string;
-  predictedTeamAScore: number;
-  predictedTeamBScore: number;
+  match_id: string;
+  score_a: number;
+  score_b: number;
   proofUrl: string;
   timestamp?: Date;
 }

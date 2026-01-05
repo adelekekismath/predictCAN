@@ -1,5 +1,5 @@
 import { Match } from "../models/match";
-import { Prediction, Result, Leaderboard } from "../models/predictions";
+import { Prediction, Result } from "../models/predictions";
 import { Profile } from "../models/profile";
 
 export class PredictionRules {
@@ -50,8 +50,8 @@ export class PredictionRules {
    */
   static calculatePointsEarned(prediction: Prediction, result: Result): number {
     const isExactScore =
-      prediction.predictedTeamAScore === result.actualTeamAScore &&
-      prediction.predictedTeamBScore === result.actualTeamBScore;
+      prediction.score_a === result.actualTeamAScore &&
+      prediction.score_b === result.actualTeamBScore;
 
     if (isExactScore) return 5;
     const getWinner = (teamA: number, teamB: number) => {
@@ -60,7 +60,7 @@ export class PredictionRules {
       return 'D';
     };
 
-    const predictedWinner = getWinner(prediction.predictedTeamAScore, prediction.predictedTeamBScore);
+    const predictedWinner = getWinner(prediction.score_a, prediction.score_b);
     const actualWinner = getWinner(result.actualTeamAScore, result.actualTeamBScore);
 
     return predictedWinner === actualWinner ? 2 : 0;

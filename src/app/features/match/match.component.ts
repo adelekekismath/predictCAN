@@ -38,30 +38,40 @@ export class MatchComponent implements OnInit {
   teams = signal<any[]>([]);
   myPredictions = signal<Prediction[]>([]);
 
-  selectedFile: File | null = null;
+  selectedFiles = signal<Map<string, File>>(new Map());
 
-isUploading = false;
+  isUploading = false;
 
-onFileSelected(event: any) {
-  this.selectedFile = event.target.files[0];
+
+onFileSelected(event: any, matchId: string) {
+  const file = event.target.files[0];
+  if (file) {
+    // On met à jour le Map avec le nouveau fichier pour ce match précis
+    this.selectedFiles.update(map => {
+      const newMap = new Map(map);
+      newMap.set(matchId, file);
+      return newMap;
+    });
+  }
 }
 
 async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
-  if (!this.selectedFile) return;
+  let selectedFile = this.selectedFiles().get(match.id!);
+  if (!selectedFile) return;
 
   try {
     this.isUploading = true;
     const userId = this.authService.currentUserId;
 
-    const storagePath =  this.supabase.uploadProof(this.selectedFile, userId!).subscribe({
+    const storagePath =  this.supabase.uploadProof(selectedFile, userId!).subscribe({
       next: (path = '') => {
 
     const newPrediction: Prediction = {
       id: '',
       userId: userId!,
-      matchId: match.id!,
-      predictedTeamAScore: parseInt(sA),
-      predictedTeamBScore: parseInt(sB),
+      match_id: match.id!,
+      score_a: parseInt(sA),
+      score_b: parseInt(sB),
       proofUrl: path,
       timestamp: new Date()
     };
@@ -69,7 +79,7 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
     this.predictionService.submitPrediction(match, newPrediction).subscribe({
       next: () => {
         this.isUploading = false;
-        this.selectedFile = null;
+        selectedFile = undefined;
       }
     });
       },
@@ -103,6 +113,7 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
 
   ngOnInit() {
     this.loadMatches();
+    this.loadMyPredictions();
   }
 
   loadMatches() {
@@ -118,6 +129,15 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
       },
       error: () => this.loading.set(false)
     });
+  }
+
+  loadMyPredictions() {
+    const user = this.authService.currentUserId;
+    if (user) {
+      this.predictionService.getCurrentUserPredictions().subscribe((predictions) => {
+        this.myPredictions.set(predictions);
+      });
+    }
   }
 
   startMatch(matchId: string) {
@@ -177,19 +197,30 @@ predict(matchId: string, scoreA: string, scoreB: string) {
   });
 }
 
-onPredict(match: Match, sA: string, sB: string, pUrl: string) {
+  async onPredict(match: Match, sA: HTMLInputElement, sB: HTMLInputElement, pUrl: HTMLInputElement) {
+  await this.handleUploadAndSubmit(match, sA.value, sB.value);
   this.predictionService.submitPrediction(
     match,
     {
-      matchId: match.id!,
-      predictedTeamAScore: parseInt(sA),
-      predictedTeamBScore: parseInt(sB),
-      proofUrl: pUrl,
+      match_id: match.id!,
+      score_a: parseInt(sA.value),
+      score_b: parseInt(sB.value),
+      proofUrl: pUrl.value,
       timestamp: new Date()
     }
   ).subscribe({
     next: () => {
-      console.log("Pronostic enregistré !");
+      alert("Pronostic soumis avec succès !");
+      this.loadMyPredictions();
+      this.matchForm.reset();
+      sA.value = '';
+      sB.value = '';
+      pUrl.value = '';
+      this.selectedFiles.update(map => {
+        const newMap = new Map(map);
+        newMap.delete(match.id!);
+        return newMap;
+      });
     },
     error: (err) => {
       console.error("Erreur lors de la soumission du pronostic:", err.message);
@@ -199,7 +230,7 @@ onPredict(match: Match, sA: string, sB: string, pUrl: string) {
 
 getMatchPrediction(matchId: string | undefined): Prediction | undefined {
   if (!matchId) return undefined;
-  return this.myPredictions().find(p => p.matchId === matchId);
+  return this.myPredictions().find(p => p.match_id === matchId);
 }
 
 getPoints(match: Match, prediction: Prediction): number {
@@ -219,5 +250,10 @@ checkCanPredict(match: Match): boolean {
 
 canViewOthers(match: Match): boolean {
   return PredictionRules.canViewOthersPredictions(match);
+}
+
+getFileForMatch(matchId: string | undefined): File | undefined {
+  if (!matchId) return undefined;
+  return this.selectedFiles().get(matchId);
 }
 }

@@ -21,5 +21,9 @@ export const routes: Routes = [
    {
     path: 'match',
     loadComponent: () => import('./features/match/match.component').then(m => m.MatchComponent)
-   }
+   },
+    {
+      path: 'stats',
+      loadComponent: () => import('./features/stats/stats.component').then(m => m.StatsComponent)
+    }
 ];

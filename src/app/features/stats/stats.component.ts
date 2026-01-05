@@ -41,12 +41,10 @@ export class StatsComponent {
     }
   }
 
-  // 1. Calcul de l'historique détaillé
   history = computed(() => {
     const userPredictions = this.predictions();
     const allMatches = this.matches();
 
-    // On ne garde que les matchs terminés où l'utilisateur a fait un prono
     return allMatches
       .filter(m => m.status === 'terminé')
       .map(match => {
@@ -79,9 +77,8 @@ export class StatsComponent {
     .map(match => {
 
       const prono = userPredictions.find(p =>{return p.match_id === match.id});
-      if (!prono) return null; // On n'affiche que les matchs où il y a un prono
+      if (!prono) return null;
 
-      // Calcul des points seulement si terminé
       let earnedPoints = 0;
       if (match.status === 'terminé') {
         earnedPoints = PredictionRules.calculatePointsEarned(prono, {
@@ -96,12 +93,11 @@ export class StatsComponent {
         match,
         prono,
         earnedPoints,
-        // On utilise ta règle 1 pour savoir si c'est encore modifiable
         isModifiable: PredictionRules.canSubmitOrModify(match)
       };
     })
     .filter(item => item !== null)
-    .sort((a, b) => new Date(b!.match.kickoff_time).getTime() - new Date(a!.match.kickoff_time).getTime()); // Plus récent en haut
+    .sort((a, b) => new Date(b!.match.kickoff_time).getTime() - new Date(a!.match.kickoff_time).getTime()); 
 });
 
   stats = computed(() => {

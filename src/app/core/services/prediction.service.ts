@@ -84,4 +84,13 @@ export class PredictionService {
         .single()
     ).pipe(map(res => res.data));
   }
+
+  getAllUserPredictionsByMatch(matchId: string): Observable<any[]> {
+    return from(
+      this.supabase.supabase
+        .from('predictions')
+        .select('*, profiles(username)')
+        .eq('match_id', matchId)
+    ).pipe(map(res => res.data || []));
+  }
 }

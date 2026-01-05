@@ -216,12 +216,14 @@
                     #sA
                     type="number"
                     placeholder="0"
+                    min="0"
                     class="w-14 h-12 text-center text-xl font-bold rounded-lg border-gray-200 focus:ring-2 focus:ring-indigo-500"
                   />
                   <span class="text-gray-300 font-bold">VS</span>
                   <input
                     #sB
                     type="number"
+                    min="0"
                     placeholder="0"
                     class="w-14 h-12 text-center text-xl font-bold rounded-lg border-gray-200 focus:ring-2 focus:ring-indigo-500"
                   />
@@ -350,12 +352,14 @@
               </div>
               }
             </div>
-            } @if (canViewOthers(match)) {
+            } @if (match.status === 'terminé') {
             <button
+              (click)="viewOtherPredictions(match.id!)"
               class="mt-4 w-full py-2 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:bg-gray-100 transition-colors"
             >
               Consulter les autres prédictions
             </button>
+
             }
           </div>
 

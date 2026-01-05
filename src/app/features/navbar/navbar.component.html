@@ -27,9 +27,6 @@
       @if(!isAuthenticated()){
         <div class="hidden md:flex items-center gap-4">
         <button (click)="login()" class="text-sm text-white "> Connexion</button>
-        <button (click)="register()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105">
-          Rejoindre
-        </button>
       </div>
       }
       @else {
@@ -39,7 +36,6 @@
 
       <!-- Mobile Menu Button (Visible uniquement sur mobile) -->
       <div class="md:hidden flex items-center gap-4">
-        <button (click)="register()" class="text-xs font-bold text-emerald-400 border border-emerald-400/30 px-3 py-1.5 rounded-full">Rejoindre</button>
         <button (click)="toggleMenu()" class="text-white p-2 focus:outline-none">
           <svg *ngIf="!isMenuOpen()" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />

@@ -2,7 +2,7 @@
 
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { from, Observable, map } from 'rxjs';
+import { from, Observable, map, of } from 'rxjs';
 import { Match } from '../models/match';
 import { AuthService } from './auth.service';
 
@@ -13,25 +13,10 @@ export class MatchService {
   private readonly TABLE_NAME = 'matches';
 
 
-  getMatches(): Observable<Match[]> {
-    return from(
-      this.supabase.supabase
-        .from(this.TABLE_NAME)
-        .select('*')
-        .order('kickoff_time', { ascending: true })
-    ).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return data as Match[];
-      })
-    );
-  }
-
-  // Récupérer toutes les équipes pour le formulaire
 getTeams(): Observable<any[]> {
   return from(
     this.supabase.supabase
-      .from('can_2025_teams') // Remplacez par le nom réel de votre table d'équipes
+      .from('can_2025_teams')
       .select('id, team_name_fr')
       .order('team_name_fr', { ascending: true })
   ).pipe(
@@ -42,7 +27,6 @@ getTeams(): Observable<any[]> {
   );
 }
 
-// Version améliorée de getMatches pour voir les noms au lieu des IDs
 getMatchesWithNames(): Observable<any[]> {
   return from(
     this.supabase.supabase
@@ -52,7 +36,31 @@ getMatchesWithNames(): Observable<any[]> {
         team_a_data:can_2025_teams!team_a(team_name_fr),
         team_b_data:can_2025_teams!team_b(team_name_fr)
       `)
-  ).pipe(map(({ data }) => data || []));
+  ).pipe(
+    map(({ data, error }) => {
+      if (error) throw error;
+
+      const matches = data as Match[];
+
+      const statusPriority: Record<string, number> = {
+        'en direct': 1,
+        'à venir': 2,
+        'terminé': 3,
+        'annulé': 4
+      };
+
+      return matches.sort((a, b) => {
+        const priorityA = statusPriority[a.status] || 99;
+        const priorityB = statusPriority[b.status] || 99;
+
+        if (priorityA !== priorityB) {
+          return priorityA - priorityB;
+        }
+
+        return new Date(a.kickoff_time).getTime() - new Date(b.kickoff_time).getTime();
+      });
+    })
+  );
 }
 
   updateMatchStatus(id: string, status: string): Observable<any> {

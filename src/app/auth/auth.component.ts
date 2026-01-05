@@ -8,20 +8,18 @@ import { map } from 'rxjs';
 
 @Component({
   selector: 'app-auth',
-  standalone: true, // Recommandé pour les nouveaux composants
-  imports: [CommonModule, ReactiveFormsModule], // Nettoyage ici
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css'] // Ou gardez vos styles inline
+  styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
-  // --- Injections ---
+
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  // --- État (Signals) ---
-  // On crée un signal qui écoute l'URL en temps réel
   modeFromUrl = toSignal(
     this.route.queryParamMap.pipe(map(params => params.get('mode')))
   );
@@ -29,7 +27,6 @@ export class AuthComponent implements OnInit {
   activeTab = signal<'login' | 'register'>('login');
   isAdminMode = signal<boolean>(false);
 
-  // --- Formulaire ---
   loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]

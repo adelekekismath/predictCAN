@@ -32,7 +32,6 @@ export class MatchComponent implements OnInit {
   private predictionService = inject(PredictionService);
   private fb = inject(FormBuilder);
 
-  // Signaux et Observables
   matches = signal<Match[]>([]);
   isAdmin = toSignal(this.authService.isAdmin$, { initialValue: false });
   loading = signal(false);
@@ -40,7 +39,7 @@ export class MatchComponent implements OnInit {
   myPredictions = signal<Prediction[]>([]);
 
   selectedFile: File | null = null;
-  
+
 isUploading = false;
 
 onFileSelected(event: any) {
@@ -54,33 +53,28 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
     this.isUploading = true;
     const userId = this.authService.currentUserId;
 
-    // 1. Upload du fichier vers Supabase Storage
     const storagePath =  this.supabase.uploadProof(this.selectedFile, userId!).subscribe({
       next: (path = '') => {
 
-    // 2. Création de l'objet Prediction selon ton interface
     const newPrediction: Prediction = {
-      id: '', // généré par la DB
+      id: '',
       userId: userId!,
       matchId: match.id!,
       predictedTeamAScore: parseInt(sA),
       predictedTeamBScore: parseInt(sB),
-      proofUrl: path, // On stocke le chemin relatif
+      proofUrl: path,
       timestamp: new Date()
     };
 
-    // 3. Enregistrement en base de données
     this.predictionService.submitPrediction(match, newPrediction).subscribe({
       next: () => {
         this.isUploading = false;
         this.selectedFile = null;
-        // Rafraîchir les prédictions ici
       }
     });
       },
       error: () => {
         this.isUploading = false;
-        alert("Erreur lors de l'upload de l'image");
       }
     });
   } catch (error) {
@@ -89,7 +83,6 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
   }
 }
 
-  // Formulaire pour ajouter/modifier
   matchForm = this.fb.group({
     team_a: [null, [Validators.required]],
     team_b: [null, [Validators.required]],
@@ -133,7 +126,6 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
     });
   }
 
-  // Termine le match (passe à 'terminé')
   finishMatch(matchId: string) {
     if (confirm('Voulez-vous vraiment terminer ce match ?')) {
       this.matchService.updateMatchStatus(matchId, 'terminé').subscribe(() => {
@@ -170,7 +162,6 @@ async handleUploadAndSubmit(match: Match, sA: string, sB: string) {
     this.matchService.updateMatch(id, updates).subscribe(() => this.loadMatches());
   }
 
-  // Dans ton composant MatchManagementComponent
 predict(matchId: string, scoreA: string, scoreB: string) {
   const valA = parseInt(scoreA);
   const valB = parseInt(scoreB);
@@ -198,11 +189,9 @@ onPredict(match: Match, sA: string, sB: string, pUrl: string) {
     }
   ).subscribe({
     next: () => {
-      // Notification de succès
       console.log("Pronostic enregistré !");
     },
     error: (err) => {
-      // Notification d'erreur (ex: Délai dépassé, Preuve manquante)
       console.error("Erreur lors de la soumission du pronostic:", err.message);
     }
   });

@@ -67,13 +67,24 @@
       @for (match of matches(); track match.id) {
         <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 transition-all hover:shadow-lg"
              [class.border-l-red-500]="match.status === 'en direct'"
-             [class.border-l-gray-300]="match.status !== 'en direct'">
+              [class.border-l-green-500]="match.status === 'terminé'"
+             [class.border-l-gray-300]="match.status === 'à venir'">
 
           <div class="p-5">
             <div class="flex justify-between items-center mb-6">
-              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                    [class]="match.status === 'en direct' ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-gray-100 text-gray-600'">
-                ● {{ match.status }}
+              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5"
+                [ngClass]="{
+                  'bg-red-100 text-red-600 animate-pulse': match.status === 'en direct',
+                  'bg-emerald-100 text-emerald-600': match.status === 'terminé',
+                  'bg-gray-100 text-gray-500': match.status === 'à venir'
+                }">
+                <span class="text-[8px]"
+                      [ngClass]="{
+                        'text-red-500': match.status === 'en direct',
+                        'text-emerald-500': match.status === 'terminé',
+                        'text-gray-400': match.status === 'à venir'
+                      }">●</span>
+                {{ match.status }}
               </span>
               <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">
                 {{ match.stage }}

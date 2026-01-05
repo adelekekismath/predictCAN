@@ -7,13 +7,12 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  standalone: true, // Assurez-vous d'être en standalone si vous utilisez 'imports'
+  standalone: true,
   imports: [CommonModule,RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  // Injection moderne
   private authService = inject(AuthService);
   private router = inject(Router);
 
@@ -41,5 +40,5 @@ export class NavbarComponent {
       }
     });
   }
-  
+
 }

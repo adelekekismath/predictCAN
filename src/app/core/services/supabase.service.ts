@@ -10,7 +10,7 @@ export class SupabaseService {
     environment.SUPABASE_ANON_KEY
   );
 
-  // Utilisation de shareReplay(1) pour éviter de refaire l'appel HTTP à chaque abonnement
+
   get session$(): Observable<Session | null> {
     return from(this.supabase.auth.getSession()).pipe(
       map(response => response.data.session),
@@ -44,12 +44,11 @@ export class SupabaseService {
       switchMap(({ data, error }) => {
         if (error) return throwError(() => error);
 
-        // getPublicUrl est synchrone, on peut l'appeler directement
         const { data: publicUrl } = this.supabase.storage
           .from('proofs')
           .getPublicUrl(fileName);
 
-        return of(publicUrl.publicUrl); // Utilisation de of() au lieu de []
+        return of(publicUrl.publicUrl);
       })
     );
   }
@@ -59,11 +58,10 @@ export class SupabaseService {
       this.supabase.auth.signInWithOAuth({
         provider,
         options: {
-          // Cette URL doit correspondre à une route autorisée dans votre Dashboard Supabase
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: provider === 'google' ? {
             access_type: 'offline',
-            prompt: 'consent', // La doc suggère 'consent' pour obtenir le refresh token
+            prompt: 'consent', 
           } : undefined,
         },
       })

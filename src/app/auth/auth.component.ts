@@ -42,7 +42,7 @@ export class AuthComponent implements OnInit {
     }
   }
 
-  authWith(provider: 'google' | 'facebook') {
+  authWith(provider: 'google' ) {
     this.authService.signInWithProvider(provider).subscribe({
       next: () => console.log(`${this.activeTab()} réussi via ${provider}`),
       error: (err) => console.error(err)

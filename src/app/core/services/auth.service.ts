@@ -75,7 +75,7 @@ export class AuthService {
    * Connexion via OAuth
    * Note : On ne ré-enveloppe pas dans from() car SupabaseService renvoie déjà un Observable
    */
-  signInWithProvider(provider: 'google' | 'facebook'): Observable<void> {
+  signInWithProvider(provider: 'google' ): Observable<void> {
     return this.supabase.loginWithProvider(provider);
   }
 

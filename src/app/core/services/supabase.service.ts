@@ -54,7 +54,7 @@ export class SupabaseService {
     );
   }
 
-  loginWithProvider(provider: 'google' | 'facebook'): Observable<void> {
+  loginWithProvider(provider: 'google'): Observable<void> {
     return from(
       this.supabase.auth.signInWithOAuth({
         provider,

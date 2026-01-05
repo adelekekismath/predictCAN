@@ -278,12 +278,12 @@
                     }
                   </div>
 
-              
                 </div>
                 <button
                   (click)="
                     onPredict(match, sA, sB, fileInput)
                   "
+                  [disabled]="!sA.value || !sB.value || !fileInput.value"
                   class="w-full bg-indigo-600 text-white text-xs font-black py-3 rounded-lg hover:bg-indigo-700 transition-all"
                 >
                   ENREGISTRER

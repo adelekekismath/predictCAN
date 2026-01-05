@@ -78,7 +78,7 @@ export class StatsComponent {
   return allMatches
     .map(match => {
 
-      const prono = userPredictions.find(p =>{console.log(p.match_id ); return p.match_id === match.id});
+      const prono = userPredictions.find(p =>{return p.match_id === match.id});
       if (!prono) return null; // On n'affiche que les matchs où il y a un prono
 
       // Calcul des points seulement si terminé

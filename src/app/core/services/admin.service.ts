@@ -18,7 +18,7 @@ export class AdminService {
       .from('predictions')
       .select(`
         *,
-        match:matches(*),
+        match:matches(*, team_a_data:can_2025_teams!team_a(team_name_fr), team_b_data:can_2025_teams!team_b(team_name_fr)),
         profile:profiles(name)
       `)
   ).pipe(

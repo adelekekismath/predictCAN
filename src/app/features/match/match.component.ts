@@ -9,6 +9,7 @@ import { PredictionService } from '../../core/services/prediction.service';
 import { Prediction } from '../../core/models/predictions';
 import { PredictionRules } from '../../core/use-cases/predictions-rules';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { ToastService } from '../../core/services/toast.service';
 
 export interface Result {
   id: string;
@@ -34,6 +35,7 @@ export class MatchComponent implements OnInit {
   canViewOthers :Map<string, boolean> = new Map();
   othersPredictions = signal<any[]>([]);
   selectedMatchId = signal<string | null>(null);
+  toastService = inject(ToastService);
 
   matches = signal<Match[]>([]);
   isAdmin = toSignal(this.authService.isAdmin$, { initialValue: false });
@@ -222,7 +224,7 @@ export class MatchComponent implements OnInit {
     }
 
     this.matchService.savePrediction(matchId, valA, valB).subscribe({
-      next: () => alert('Pronostic enregistré !'),
+      next: () => this.toastService.show('Pronostic enregistré avec succès !', 'success'),
       error: (err) => console.error('Erreur:', err),
     });
   }
@@ -244,7 +246,7 @@ export class MatchComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          alert('Pronostic soumis avec succès !');
+          this.toastService.show('Pronostic soumis avec succès !', 'success');
           this.loadMyPredictions();
           this.matchForm.reset();
           sA.value = '';

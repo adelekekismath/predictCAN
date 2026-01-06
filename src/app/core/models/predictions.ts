@@ -9,11 +9,8 @@ export interface Prediction {
   proofUrl: string;
   timestamp?: Date;
   match?: Match;
-  profile?: {
-    username: string;
-    avatar_url: string;
-  };
-  
+  profile?: any
+
 }
 
 export interface Result {

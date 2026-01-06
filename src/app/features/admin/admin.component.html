@@ -7,32 +7,37 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @for (p of pendingPredictions(); track p.id) {
       <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-
+        @if(p.proofUrl) {
         <div class="relative h-48 bg-gray-200 group">
           <img [src]="p.proofUrl" class="w-full h-full object-cover transition-transform group-hover:scale-105">
           <a [href]="p.proofUrl" target="_blank" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-bold transition-opacity">
             🔍 Agrandir l'image
           </a>
         </div>
+        } @else {
+        <div class="relative h-48 bg-gray-100 flex items-center justify-center text-gray-400 font-bold">
+          Aucune preuve fournie
+        </div>
+        }
 
         <div class="p-5 space-y-4 flex-1">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-xs">
-              {{ p.profile?.username?.charAt(0) }}
+              {{ p.profile?.name?.charAt(0) }}
             </div>
             <div>
-              <div class="text-xs font-black text-gray-800">{{ p.profile?.username }}</div>
+              <div class="text-xs font-black text-gray-800">{{ p.profile?.name }}</div>
             </div>
           </div>
 
           <div class="bg-gray-50 rounded-2xl p-3 border border-gray-100">
             <div class="text-[9px] font-black text-gray-400 uppercase mb-2">Match & Pronostic</div>
             <div class="flex justify-between items-center text-xs font-bold">
-              <span>{{ p.match?.team_a }}</span>
+              <span>{{ p.match?.team_a_data.team_name_fr }}</span>
               <span class="text-indigo-600 bg-white px-2 py-1 rounded-lg shadow-sm">
                 {{ p.score_a }} - {{ p.score_b }}
               </span>
-              <span>{{ p.match?.team_b }}</span>
+              <span>{{ p.match?.team_b_data.team_name_fr }}</span>
             </div>
           </div>
 

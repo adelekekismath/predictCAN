@@ -1,18 +1,27 @@
 <div class="mt-[80px] max-w-md mx-auto p-6 space-y-8 bg-gray-50 min-h-screen">
-
-  <div class="bg-indigo-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
+  <div
+    class="bg-indigo-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden"
+  >
     <div class="relative z-10">
-      <h1 class="text-sm font-bold opacity-80 uppercase tracking-tighter">Mon Score Total</h1>
-      <div class="text-6xl font-black mt-2">{{ stats().totalPoints }} <span class="text-xl">pts</span></div>
+      <h1 class="text-sm font-bold opacity-80 uppercase tracking-tighter">
+        Mon Score Total
+      </h1>
+      <div class="text-6xl font-black mt-2">
+        {{ stats().totalPoints }} <span class="text-xl">pts</span>
+      </div>
 
       <div class="grid grid-cols-3 gap-4 mt-8 border-t border-white/20 pt-6">
         <div class="text-center">
           <div class="text-xl font-black">{{ stats().exactScores }}</div>
-          <div class="text-[9px] opacity-70 uppercase font-bold">Scores Exacts</div>
+          <div class="text-[9px] opacity-70 uppercase font-bold">
+            Scores Exacts
+          </div>
         </div>
         <div class="text-center border-x border-white/20">
           <div class="text-xl font-black">{{ stats().correctWinners }}</div>
-          <div class="text-[9px] opacity-70 uppercase font-bold">Vainqueurs</div>
+          <div class="text-[9px] opacity-70 uppercase font-bold">
+            Vainqueurs
+          </div>
         </div>
         <div class="text-center">
           <div class="text-xl font-black">{{ stats().efficiency }}%</div>
@@ -20,139 +29,69 @@
         </div>
       </div>
     </div>
-    <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+    <div
+      class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"
+    ></div>
   </div>
 
   <div class="space-y-4">
-    <h2 class="text-xs font-black text-gray-400 uppercase tracking-widest px-2">Évolution Match par Match</h2>
+    <h2 class="text-xs font-black text-gray-400 uppercase tracking-widest px-2">
+      Évolution Match par Match
+    </h2>
 
     <div class="space-y-3">
       @for (item of history(); track item.match.id) {
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 transition-all hover:scale-[1.02]">
-          <div [ngClass]="{
-            'bg-emerald-500 shadow-emerald-200': item.points === 5,
-            'bg-indigo-500 shadow-indigo-200': item.points === 2,
+      <div
+        class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 transition-all hover:scale-[1.02]"
+      >
+        <div
+          [ngClass]="{
+            'bg-emerald-500 shadow-emerald-200': item.points >= 5,
+            'bg-indigo-500 shadow-indigo-200':
+              item.points > 0 && item.points < 5,
             'bg-gray-300 shadow-gray-100': item.points === 0
-          }" class="w-12 h-12 rounded-full flex flex-col items-center justify-center text-white shadow-lg shrink-0">
-            <span class="text-lg font-black">+{{ item.points }}</span>
-          </div>
+          }"
+          class="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white shadow-lg shrink-0"
+        >
+          <span class="text-[10px] font-bold leading-none">PTS</span>
+          <span class="text-sm font-black"
+            >+{{ item.points | number : "1.1-1" }}</span
+          >
+        </div>
 
-          <div class="flex-1">
-            <div class="text-[10px] text-gray-400 font-bold uppercase mb-1">
-              {{ item.date | date:'dd MMM' }} • {{ item.match.stage }}
-            </div>
-            <div class="text-xs font-bold text-gray-800">
-              {{ item.match.team_a_data?.name }} vs {{ item.match.team_b_data?.name }}
-            </div>
-            <div class="text-[10px] mt-1 italic text-gray-500">
-              Ton prono: {{ item.prono.score_a }}-{{ item.prono.score_b }}
-              (Réel: {{ item.match.score_a }}-{{ item.match.score_b }})
-            </div>
+        <div class="flex-1">
+          <div class="text-[10px] text-gray-400 font-bold uppercase mb-1">
+            {{ item.date | date : "dd MMM" }} • {{ item.match.stage }}
           </div>
-
-          <div class="text-right">
-             @if (item.points === 5) {
-               <span class="text-xl">🔥</span>
-             } @else if (item.points === 2) {
-               <span class="text-xl">✅</span>
-             } @else {
-               <span class="text-xl">❌</span>
-             }
+          <div class="text-xs font-bold text-gray-800">
+            {{ item.match.team_a_data?.team_name_fr }} vs
+            {{ item.match.team_b_data?.team_name_fr }}
+          </div>
+          <div class="text-[10px] mt-1 italic text-gray-500">
+            Ton prono: {{ item.prono.score_a }}-{{ item.prono.score_b }} (Réel:
+            {{ item.match.score_a }}-{{ item.match.score_b }})
           </div>
         </div>
+
+        <div class="text-right">
+          @if (item.points >= 8) {
+          <span class="text-xl" title="Score Exact !">🎯</span>
+          } @else if (item.points > 0) {
+          <span class="text-xl">✅</span>
+          } @else {
+          <span class="text-xl">❌</span>
+          }
+        </div>
+      </div>
       } @empty {
-        <div class="text-center py-10 bg-white rounded-3xl border-2 border-dashed border-gray-200">
-          <p class="text-gray-400 text-sm font-medium">Aucun match terminé pour le moment.</p>
-        </div>
+      <div
+        class="text-center py-10 bg-white rounded-3xl border-2 border-dashed border-gray-200"
+      >
+        <p class="text-gray-400 text-sm font-medium">
+          Aucun match terminé pour le moment.
+        </p>
+      </div>
       }
     </div>
   </div>
-
-  <div class="max-w-md mx-auto p-4 space-y-6">
-  <h2 class="text-xl font-black text-gray-900 px-2">Tous mes pronos</h2>
-
-  <div class="space-y-4">
-    @for (item of allUserPredictions(); track item.prono.id) {
-      <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 relative overflow-hidden">
-
-        <div class="absolute top-4 right-4">
-          <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                [ngClass]="{
-                  'bg-red-100 text-red-600 animate-pulse': item.match.status === 'en direct',
-                  'bg-gray-100 text-gray-500': item.match.status === 'à venir',
-                  'bg-emerald-100 text-emerald-600': item.match.status === 'terminé'
-                }">
-            {{ item.match.status }}
-          </span>
-        </div>
-
-        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-3">
-          {{ item.match.kickoff_time | date:'EEEE dd MMMM • HH:mm' }}
-        </div>
-
-        <div class="flex items-center justify-between mb-4">
-          <div class="text-center w-1/3">
-            <div class="text-sm font-bold text-gray-800">{{ item.match.team_a_data?.team_name_fr }}</div>
-          </div>
-
-          <div class="flex flex-col items-center justify-center w-1/3">
-             <div class="bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
-               <span class="text-2xl font-black text-indigo-600">
-                 {{ item.prono.score_a }} - {{ item.prono.score_b }}
-               </span>
-             </div>
-             <span class="text-[9px] text-gray-400 font-bold mt-1 uppercase">Ton prono</span>
-          </div>
-
-          <div class="text-center w-1/3">
-            <div class="text-sm font-bold text-gray-800">{{ item.match.team_b_data?.team_name_fr }}</div>
-          </div>
-        </div>
-
-        <div class="mt-4 pt-4 border-t border-dashed border-gray-100 flex items-center justify-between">
-
-          @if (item.isModifiable) {
-            <div class="flex items-center gap-2 text-blue-600">
-              <span class="text-lg">✏️</span>
-              <span class="text-xs font-bold underline">Modifier mon prono</span>
-            </div>
-          }
-
-          @if (item.match.status === 'terminé') {
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-500 font-medium italic">
-                Réel: {{ item.match.score_a }}-{{ item.match.score_b }}
-              </span>
-              <span [ngClass]="item.earnedPoints > 0 ? 'bg-emerald-500' : 'bg-gray-400'"
-                    class="text-white text-[10px] font-black px-2 py-1 rounded-lg">
-                +{{ item.earnedPoints }} PTS
-              </span>
-            </div>
-          }
-
-          @if (item.match.status === 'en direct') {
-            <div class="flex items-center gap-2 text-red-500">
-              <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-              </span>
-              <span class="text-[10px] font-black uppercase">Verrouillé - Match en cours</span>
-            </div>
-          }
-
-          @if (item.prono.proofUrl) {
-            <a [href]="item.prono.proofUrl" target="_blank" class="text-[10px] text-gray-400 flex items-center gap-1 hover:text-indigo-600">
-              🖼️ Voir la preuve
-            </a>
-          }
-        </div>
-
-      </div>
-    } @empty {
-      <div class="text-center py-20 bg-gray-100 rounded-3xl border-2 border-dashed border-gray-300">
-        <p class="text-gray-500 font-bold">Tu n'as pas encore fait de prédictions.</p>
-      </div>
-    }
-  </div>
-</div>
 </div>

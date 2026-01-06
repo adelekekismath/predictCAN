@@ -90,13 +90,28 @@ export class StatsComponent {
     .sort((a, b) => new Date(b!.match.kickoff_time).getTime() - new Date(a!.match.kickoff_time).getTime());
 });
 
-  stats = computed(() => {
-    const h = this.history();
-    return {
-      totalPoints: h.reduce((acc, curr) => acc + curr!.points, 0),
-      exactScores: h.filter(x => x!.points === 5).length,
-      correctWinners: h.filter(x => x!.points === 2).length,
-      efficiency: h.length > 0 ? Math.round((h.filter(x => x!.points > 0).length / h.length) * 100) : 0
-    };
-  });
+ stats = computed(() => {
+  const h = this.history();
+
+  if (!h || h.length === 0) {
+    return { totalPoints: 0, exactScores: 0, correctWinners: 0, efficiency: 0 };
+  }
+
+  return {
+    totalPoints: h.reduce((acc, curr) => acc + (curr?.points || 0), 0),
+
+    exactScores: h.filter(x =>
+      x.prono.score_a === x.match.score_a &&
+      x.prono.score_b === x.match.score_b
+    ).length,
+
+    correctWinners: h.filter(x => {
+      const pronoResult = Math.sign(x.prono.score_a - x.prono.score_b);
+      const realResult = Math.sign(x.match.score_a - x.match.score_b);
+      return pronoResult === realResult;
+    }).length,
+
+    efficiency: Math.round((h.filter(x => x.points > 0).length / h.length) * 100)
+  };
+});
 }

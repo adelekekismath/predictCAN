@@ -41,14 +41,21 @@ export class SupabaseService {
     const fileName = `${userId}/${Date.now()}_${file.name}`;
 
     return from(this.supabase.storage.from('proofs').upload(fileName, file)).pipe(
-      switchMap(({ data, error }) => {
-        if (error) return throwError(() => error);
+      switchMap(({ data: uploadData, error: uploadError }) => {
+        if (uploadError) return throwError(() => uploadError);
 
-        const { data: publicUrl } = this.supabase.storage
-          .from('proofs')
-          .getPublicUrl(fileName);
-        console.log('Public URL:', publicUrl);
-        return of(publicUrl.publicUrl);
+        return from(
+          this.supabase.storage
+            .from('proofs')
+            .createSignedUrl(fileName, 60 * 60 * 24 * 7)
+        );
+      }),
+      map(({ data, error: signedError }) => {
+        if (signedError) throw signedError;
+        if (!data?.signedUrl) throw new Error("Impossible de générer l'URL signée");
+
+        console.log('Signed URL générée:', data.signedUrl);
+        return data.signedUrl;
       })
     );
   }

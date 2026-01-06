@@ -25,5 +25,13 @@ export const routes: Routes = [
     {
       path: 'stats',
       loadComponent: () => import('./features/stats/stats.component').then(m => m.StatsComponent)
+    },
+    {
+      path: 'admin',
+      loadComponent: () => import('./features/admin/admin.component').then(m => m.AdminComponent)
+    },
+    {
+      path: 'ranking',
+      loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent)
     }
 ];

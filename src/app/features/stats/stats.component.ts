@@ -51,12 +51,7 @@ export class StatsComponent {
         const prono = userPredictions.find(p => p.match_id === match.id);
         if (!prono) return null;
 
-        const points = PredictionRules.calculatePointsEarned(prono, {
-          id: '', matchId: match.id!,
-          actualTeamAScore: match.score_a,
-          actualTeamBScore: match.score_b,
-          determinedAt: new Date()
-        });
+        const points = PredictionRules.calculatePointsEarned(prono, match);
 
         return {
           match,
@@ -81,12 +76,7 @@ export class StatsComponent {
 
       let earnedPoints = 0;
       if (match.status === 'terminé') {
-        earnedPoints = PredictionRules.calculatePointsEarned(prono, {
-          id: '', matchId: match.id!,
-          actualTeamAScore: match.score_a,
-          actualTeamBScore: match.score_b,
-          determinedAt: new Date()
-        });
+        earnedPoints = PredictionRules.calculatePointsEarned(prono, match);
       }
 
       return {
@@ -97,7 +87,7 @@ export class StatsComponent {
       };
     })
     .filter(item => item !== null)
-    .sort((a, b) => new Date(b!.match.kickoff_time).getTime() - new Date(a!.match.kickoff_time).getTime()); 
+    .sort((a, b) => new Date(b!.match.kickoff_time).getTime() - new Date(a!.match.kickoff_time).getTime());
 });
 
   stats = computed(() => {

@@ -32,6 +32,8 @@ export class MatchComponent implements OnInit {
   private predictionService = inject(PredictionService);
   private fb = inject(FormBuilder);
   canViewOthers :Map<string, boolean> = new Map();
+  othersPredictions = signal<any[]>([]);
+  selectedMatchId = signal<string | null>(null);
 
   matches = signal<Match[]>([]);
   isAdmin = toSignal(this.authService.isAdmin$, { initialValue: false });
@@ -117,6 +119,18 @@ export class MatchComponent implements OnInit {
   ngOnInit() {
     this.loadMatches();
     this.loadMyPredictions();
+  }
+
+  viewOtherPredictions(matchId: string) {
+    if (this.selectedMatchId() === matchId) {
+      this.selectedMatchId.set(null);
+      return;
+    }
+
+    this.predictionService.getAllOtherUsersPredictionsByMatch(matchId).subscribe(data => {
+      this.othersPredictions.set(data);
+      this.selectedMatchId.set(matchId);
+    });
   }
 
   loadMatches() {
@@ -264,7 +278,7 @@ export class MatchComponent implements OnInit {
       actualTeamBScore: match.score_b,
       determinedAt: new Date(),
     };
-    return PredictionRules.calculatePointsEarned(prediction, result);
+    return PredictionRules.calculatePointsEarned(prediction, match);
   }
 
   checkCanPredict(match: Match): boolean {
@@ -280,8 +294,6 @@ export class MatchComponent implements OnInit {
 
 
 
-  viewOtherPredictions(matchId: string) {
 
-  }
 
 }

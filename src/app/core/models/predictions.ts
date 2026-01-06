@@ -1,3 +1,5 @@
+import { Match } from "./match";
+
 export interface Prediction {
   id?: string;
   userId?: string;
@@ -6,6 +8,12 @@ export interface Prediction {
   score_b: number;
   proofUrl: string;
   timestamp?: Date;
+  match?: Match;
+  profile?: {
+    username: string;
+    avatar_url: string;
+  };
+  
 }
 
 export interface Result {

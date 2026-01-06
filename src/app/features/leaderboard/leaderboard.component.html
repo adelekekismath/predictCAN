@@ -1,0 +1,91 @@
+<div class="mt-[80px] min-h-screen bg-slate-50 pb-20">
+  <div class="bg-gradient-to-b from-indigo-600 to-indigo-800 h-64 rounded-b-[3rem] p-6 text-white flex flex-col items-center">
+    <h1 class="text-2xl font-black tracking-tighter mt-4">CLASSEMENT GÉNÉRAL</h1>
+    <p class="text-indigo-200 text-[10px] font-bold uppercase tracking-widest">CAN 2025 • Expert Pronos</p>
+
+    <div class=" flex items-end justify-center gap-4 mt-8 w-full max-w-sm">
+
+      @if (ranking()[1]) {
+        <div class="flex flex-col items-center mb-2 animate-in slide-in-from-bottom-4 duration-500">
+          <div class="relative">
+            <img [src]="'https://ui-avatars.com/api/?name=' + ranking()[1].name"
+                 class="w-14 h-14 rounded-full border-4 border-slate-300 object-cover shadow-lg">
+            <div class="absolute -bottom-2 -right-1 bg-slate-300 text-slate-800 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black">2</div>
+          </div>
+          <span class="text-[10px] font-bold mt-2 truncate w-20 text-center">{{ ranking()[1].name }}</span>
+          <span class="text-xs font-black">{{ ranking()[1].total_points }} pts</span>
+        </div>
+      }
+
+      @if (ranking()[0]) {
+        <div class="flex flex-col items-center z-10 animate-in zoom-in duration-700">
+          <div class="relative">
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-2xl animate-bounce">👑</div>
+            <img [src]="ranking()[0].avatar_url || 'https://ui-avatars.com/api/?name=' + ranking()[0].name"
+                 class="w-20 h-20 rounded-full border-4 border-yellow-400 object-cover shadow-2xl shadow-yellow-500/50">
+            <div class="absolute -bottom-2 -right-1 bg-yellow-400 text-yellow-900 w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-lg">1</div>
+          </div>
+          <span class="text-xs font-black mt-2 truncate w-24 text-center">{{ ranking()[0].name }}</span>
+          <span class="text-sm font-black text-yellow-300">{{ ranking()[0].total_points }} pts</span>
+        </div>
+      }
+
+      @if (ranking()[2]) {
+        <div class="flex flex-col items-center mb-1 animate-in slide-in-from-bottom-4 duration-500 delay-200">
+          <div class="relative">
+            <img [src]="ranking()[2].avatar_url || 'https://ui-avatars.com/api/?name=' + ranking()[2].name"
+                 class="w-12 h-12 rounded-full border-4 border-amber-600/50 object-cover shadow-lg">
+            <div class="absolute -bottom-2 -right-1 bg-amber-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black">3</div>
+          </div>
+          <span class="text-[10px] font-bold mt-2 truncate w-16 text-center">{{ ranking()[2].name }}</span>
+          <span class="text-xs font-black">{{ ranking()[2].total_points }} pts</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="max-w-md mx-auto px-4 -mt-6">
+    <div class="mt-5 bg-white rounded-[2.5rem] shadow-xl shadow-slate-200 overflow-hidden border border-slate-100">
+
+      <div class="p-6 border-b border-slate-50 flex justify-between items-center">
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Tous les experts</h3>
+        <span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black">
+          {{ ranking().length }} Experts
+        </span>
+      </div>
+
+      <div class="divide-y divide-slate-50">
+        @for (player of ranking(); track player.profile_id; let i = $index) {
+          <div class="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+            <div class="flex items-center gap-4">
+
+              <div class="relative">
+                <img [src]="player.avatar_url || 'https://ui-avatars.com/api/?name=' + player.name"
+                     class="w-10 h-10 rounded-2xl object-cover">
+              </div>
+
+              <div>
+                <div class="text-sm font-bold text-slate-800">{{ player.name }}</div>
+                <div class="text-[9px] text-slate-400 font-bold uppercase tracking-tight">
+                  {{ player.predictions_count }} matchs prédits
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <div class="text-sm font-black text-indigo-600">{{ player.total_points | number:'1.0-2' }}</div>
+              <div class="text-[8px] font-bold text-slate-300 uppercase">Points</div>
+            </div>
+          </div>
+        } @empty {
+          @if (!isLoading()) {
+            <div class="p-12 text-center">
+              <span class="text-4xl">⏱️</span>
+              <p class="text-slate-400 font-bold mt-4 text-sm">Le classement arrive bientôt...</p>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

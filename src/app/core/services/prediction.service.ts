@@ -85,12 +85,14 @@ export class PredictionService {
     ).pipe(map(res => res.data));
   }
 
-  getAllUserPredictionsByMatch(matchId: string): Observable<any[]> {
+  getAllOtherUsersPredictionsByMatch(matchId: string): Observable<any[]> {
     return from(
       this.supabase.supabase
         .from('predictions')
-        .select('*, profiles(username)')
+        .select('*, profiles(name)')
         .eq('match_id', matchId)
-    ).pipe(map(res => res.data || []));
+    ).pipe(map(res => {
+      return res.data?.filter(prediction => prediction.user_id !== this.authService.currentUserId) || [];
+    }));
   }
 }

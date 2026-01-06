@@ -4,6 +4,17 @@ import { Profile } from "../models/profile";
 
 export class PredictionRules {
 
+  static getPhaseCoefficient(stage: string): number {
+    const coefficients: { [key: string]: number } = {
+      '8ème de finale': 1.5,
+      'Quart de finale': 2,
+      'Demi-finale': 2.5,
+      'Match pour la 3ème place': 3,
+      'finale': 3
+    };
+    return coefficients[stage.toLowerCase()] || 1;
+  }
+
   /**
    * REGLE 1 : Verrouillage temporel strict.
    * Une prédiction (création ou modification) est autorisée UNIQUEMENT :
@@ -48,23 +59,32 @@ export class PredictionRules {
    * - 2 points : Bon vainqueur ou nul, mais score erroné (ex: 1-0 prédit, 2-1 réel).
    * - 0 point : Mauvais pronostic.
    */
-  static calculatePointsEarned(prediction: Prediction, result: Result): number {
-    const isExactScore =
-      prediction.score_a === result.actualTeamAScore &&
-      prediction.score_b === result.actualTeamBScore;
+  static calculatePointsEarned(prediction: Prediction, match: Match): number {
+    const Ci = this.getPhaseCoefficient(match.stage!);
 
-    if (isExactScore) return 5;
-    const getWinner = (teamA: number, teamB: number) => {
-      if (teamA > teamB) return 'H';
-      if (teamB > teamA) return 'A';
-      return 'D';
-    };
+    // 1. Indicateurs de base
+    const isResult = (prediction.score_a > prediction.score_b && match.score_a > match.score_b) ||
+                     (prediction.score_a < prediction.score_b && match.score_a < match.score_b) ||
+                     (prediction.score_a === prediction.score_b && match.score_a === match.score_b) ? 1 : 0;
 
-    const predictedWinner = getWinner(prediction.score_a, prediction.score_b);
-    const actualWinner = getWinner(result.actualTeamAScore, result.actualTeamBScore);
+    const isDiff = (prediction.score_a - prediction.score_b) === (match.score_a - match.score_b) ? 1 : 0;
 
-    return predictedWinner === actualWinner ? 2 : 0;
+    const isExact = (prediction.score_a === match.score_a && prediction.score_b === match.score_b) ? 1 : 0;
+
+    const basePoints = isResult + isDiff + (2 * isExact);
+
+    // 2. Bonus d'incertitude (basé sur les ranks de tes images)
+    // Formule : 1 + 0.5 * (1 - |RankA - RankB| / 100)
+    const rankDiff = Math.abs(match.team_a_data.id - match.team_b_data.id);
+    const uncertaintyBonus = 1 + 0.5 * (1 - (rankDiff / 100));
+
+    // 3. Calcul final
+    const finalScore = Ci * basePoints * uncertaintyBonus;
+
+    // On arrondit à 2 décimales pour l'affichage
+    return Math.round(finalScore * 100) / 100;
   }
+
 
   /**
    * REGLE 5 : Éligibilité au classement.

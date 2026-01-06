@@ -279,12 +279,9 @@
                     </p>
                     }
                   </div>
-
                 </div>
                 <button
-                  (click)="
-                    onPredict(match, sA, sB, fileInput)
-                  "
+                  (click)="onPredict(match, sA, sB, fileInput)"
                   [disabled]="!sA.value || !sB.value || !fileInput.value"
                   class="w-full bg-indigo-600 text-white text-xs font-black py-3 rounded-lg hover:bg-indigo-700 transition-all"
                 >
@@ -294,7 +291,7 @@
             </div>
             } @if (prono) {
             <div class="space-y-3">
-              @if (match.status === 'à venir') {
+              @if (match.status === 'à venir' || match.status === 'en direct') {
               <div class="p-3 bg-indigo-600 rounded-xl text-white shadow-lg">
                 <div class="flex justify-between items-center mb-1">
                   <span class="text-[9px] font-bold uppercase opacity-80"
@@ -302,8 +299,8 @@
                   >
                   <span
                     class="text-[9px] font-bold uppercase bg-white/20 px-2 py-0.5 rounded"
-                    >Enregistré</span
-                  >
+                    >Enregistré
+                  </span>
                 </div>
                 <div class="text-center text-2xl font-black">
                   {{ prono.score_a }} — {{ prono.score_b }}
@@ -357,10 +354,53 @@
               (click)="viewOtherPredictions(match.id!)"
               class="mt-4 w-full py-2 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:bg-gray-100 transition-colors"
             >
-              Consulter les autres prédictions
+              {{
+                selectedMatchId() === match.id
+                  ? "Fermer les pronos"
+                  : "Consulter les autres prédictions"
+              }}
             </button>
 
-            }
+            @if (selectedMatchId() === match.id) {
+            <div
+              class="mt-4 space-y-2 animate-in slide-in-from-top-2 duration-300"
+            >
+              <h5 class="text-[9px] font-black text-gray-400 uppercase px-1">
+                Pronostics de la communauté
+              </h5>
+
+              <div
+                class="max-h-48 overflow-y-auto pr-2 space-y-2 custom-scrollbar"
+              >
+                @for (p of othersPredictions(); track p.profiles?.name) {
+                <div
+                  class="flex items-center justify-between bg-white p-2 rounded-xl border border-gray-100 shadow-sm"
+                >
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center text-[10px] font-bold text-indigo-500"
+                    >
+                      {{ p.profiles?.name?.charAt(0) }}
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-700">{{
+                      p.profiles?.name
+                    }}</span>
+                  </div>
+
+                  <div
+                    class="bg-indigo-600 text-white text-[11px] font-black px-2 py-1 rounded-lg"
+                  >
+                    {{ p.score_a }} - {{ p.score_b }}
+                  </div>
+                </div>
+                } @empty {
+                <p class="text-[10px] text-gray-400 italic p-4 text-center">
+                  Aucun autre pronostic validé pour ce match.
+                </p>
+                }
+              </div>
+            </div>
+            } }
           </div>
 
           @if (isAdmin()) {

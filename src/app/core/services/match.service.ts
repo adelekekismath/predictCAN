@@ -33,8 +33,8 @@ getMatchesWithNames(): Observable<any[]> {
       .from('matches')
       .select(`
         *,
-        team_a_data:can_2025_teams!team_a(team_name_fr),
-        team_b_data:can_2025_teams!team_b(team_name_fr)
+        team_a_data:can_2025_teams!team_a(id, team_name_fr),
+        team_b_data:can_2025_teams!team_b(id, team_name_fr)
       `)
   ).pipe(
     map(({ data, error }) => {

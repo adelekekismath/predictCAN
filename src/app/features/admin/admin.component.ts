@@ -1,45 +1,63 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AdminService } from '../../core/services/admin.service';
 import { Prediction } from '../../core/models/predictions';
+import { PredictionRules } from '../../core/use-cases/predictions-rules';
+
+interface MatchGroup {
+  match: any;
+  predictions: Prediction[];
+}
 
 @Component({
   selector: 'app-admin',
-  imports: [],
-  templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './admin.component.html'
 })
-export class AdminComponent {
-  adminService = inject(AdminService);
-  pendingPredictions = signal<Prediction[]>([]);
+export class AdminComponent implements OnInit {
+  private adminService = inject(AdminService);
+
+  predictions = signal<Prediction[]>([]);
+
+  groupedPredictions = computed(() => {
+    const groups: { [key: string]: MatchGroup } = {};
+
+    this.predictions().forEach(p => {
+      const matchId = p.match_id;
+      if (!groups[matchId]) {
+        groups[matchId] = {
+          match: p.match, // Contient score_a, score_b, status, etc.
+          predictions: []
+        };
+      }
+      groups[matchId].predictions.push(p);
+    });
+
+    return Object.values(groups);
+  });
 
   ngOnInit() {
-    this.loadPendingPredictions();
+    this.loadAllPredictions();
   }
 
-  loadPendingPredictions() {
-    this.adminService.getPendingPredictions().subscribe(predictions => {
-      this.pendingPredictions.set(predictions);
+  loadAllPredictions() {
+    // Note: Assure-toi que ton service récupère TOUTES les prédictions avec les jointures
+    this.adminService.getPendingPredictions().subscribe(data => {
+      this.predictions.set(data);
     });
   }
 
   handleStatus(predictionId: string, status: 'validated' | 'rejected') {
-    if (status === 'validated') {
-      this.validatePrediction(predictionId).subscribe(() => {
-        this.loadPendingPredictions();
-      });
-    } else if (status === 'rejected') {
-      this.rejectPrediction(predictionId).subscribe(() => {
-        this.loadPendingPredictions();
-      });
-    }
+    this.adminService.updatePredictionStatus(predictionId, status).subscribe(() => {
+      this.loadAllPredictions(); // Rafraîchir la liste
+    });
   }
 
-  validatePrediction(predictionId: string) {
-    return this.adminService.updatePredictionStatus(predictionId, 'validated');
+  getPointsEarned(prediction: Prediction, match: any): number {
+    console.log(prediction)
+    return PredictionRules.calculatePointsEarned(prediction, match);
   }
 
-  rejectPrediction(predictionId: string) {
-    return this.adminService.updatePredictionStatus(predictionId, 'rejected');
-  }
 
 }

@@ -60,7 +60,12 @@ export class PredictionRules {
    * - 0 point : Mauvais pronostic.
    */
   static calculatePointsEarned(prediction: Prediction, match: Match): number {
+
+    console.log("Calculating points for prediction:", prediction);
+    console.log("Against match result:", match);
     const Ci = this.getPhaseCoefficient(match.stage!);
+
+    console.log("Ci:", Ci);
 
     // 1. Indicateurs de base
     const isResult = (prediction.score_a > prediction.score_b && match.score_a > match.score_b) ||
@@ -68,6 +73,7 @@ export class PredictionRules {
                      (prediction.score_a === prediction.score_b && match.score_a === match.score_b) ? 1 : 0;
 
     const isDiff = (prediction.score_a - prediction.score_b) === (match.score_a - match.score_b) ? 1 : 0;
+
 
     const isExact = (prediction.score_a === match.score_a && prediction.score_b === match.score_b) ? 1 : 0;
 

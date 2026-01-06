@@ -10,6 +10,7 @@ export interface Prediction {
   timestamp?: Date;
   match?: Match;
   profile?: any
+  is_invalidated?: boolean;
 
 }
 

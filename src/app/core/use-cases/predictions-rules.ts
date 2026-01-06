@@ -45,7 +45,7 @@ export class PredictionRules {
    * de la prédiction est cohérent.
    */
   static isProofValid(prediction: Prediction): boolean {
-    const hasProof = !!prediction.proofUrl && prediction.proofUrl.length > 0;
+    const hasProof = !!prediction.proof_url && prediction.proof_url.length > 0;
 
     const hasTimestamp = !!prediction.timestamp;
 

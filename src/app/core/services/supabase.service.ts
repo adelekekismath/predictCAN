@@ -53,8 +53,6 @@ export class SupabaseService {
       map(({ data, error: signedError }) => {
         if (signedError) throw signedError;
         if (!data?.signedUrl) throw new Error("Impossible de générer l'URL signée");
-
-        console.log('Signed URL générée:', data.signedUrl);
         return data.signedUrl;
       })
     );

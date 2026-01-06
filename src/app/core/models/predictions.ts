@@ -6,7 +6,7 @@ export interface Prediction {
   match_id: string;
   score_a: number;
   score_b: number;
-  proofUrl: string;
+  proof_url: string;
   timestamp?: Date;
   match?: Match;
   profile?: any

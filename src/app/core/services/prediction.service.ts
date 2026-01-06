@@ -22,11 +22,11 @@ export class PredictionService {
       user_id: this.authService.currentUserId,
       score_a: newPrediction.score_a,
       score_b: newPrediction.score_b,
-      proof_url: newPrediction.proofUrl,
+      proof_url: newPrediction.proof_url,
       updated_at: new Date()
     };
 
-    if (!PredictionRules.isProofValid({ proofUrl: newPrediction.proofUrl, timestamp: prediction.updated_at } as any)) {
+    if (!PredictionRules.isProofValid({ proof_url: newPrediction.proof_url, timestamp: prediction.updated_at } as any)) {
       return throwError(() => new Error("La preuve URL est obligatoire."));
     }
 

@@ -7,11 +7,11 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @for (p of pendingPredictions(); track p.id) {
       <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-        @if(p.proofUrl) {
+        @if(p.proof_url) {
         <div class="relative h-48 bg-gray-200 group">
-          <img [src]="p.proofUrl" class="w-full h-full object-cover transition-transform group-hover:scale-105">
-          <a [href]="p.proofUrl" target="_blank" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-bold transition-opacity">
-            🔍 Agrandir l'image
+          <img [src]="p.proof_url" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+          <a [href]="p.proof_url" target="_blank" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-bold transition-opacity">
+            🔍 Voir l'image
           </a>
         </div>
         } @else {

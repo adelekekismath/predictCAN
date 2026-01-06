@@ -23,7 +23,6 @@ export class AdminService {
       `)
   ).pipe(
     map(({ data, error }) => {
-      console.log(data);
       if (error) throw error;
       return data;
     })

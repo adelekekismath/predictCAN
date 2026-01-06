@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { ToastService } from '../core/services/toast.service';
 
 @Component({
   selector: 'app-auth',
@@ -19,6 +20,7 @@ export class AuthComponent implements OnInit {
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   modeFromUrl = toSignal(
     this.route.queryParamMap.pipe(map(params => params.get('mode')))
@@ -55,7 +57,7 @@ export class AuthComponent implements OnInit {
         console.log("Connexion Admin réussie");
         this.router.navigate(['/match']);
       },
-      error: (error) => console.error("Erreur login admin:", error)
+      error: (error) => this.toastService.show("Échec de la connexion Admin: " + error.message)
     });
   }
 }

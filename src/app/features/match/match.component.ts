@@ -77,7 +77,7 @@ export class MatchComponent implements OnInit {
               match_id: match.id!,
               score_a: parseInt(sA),
               score_b: parseInt(sB),
-              proofUrl: path,
+              proof_url: path,
               timestamp: new Date(),
             };
 
@@ -96,7 +96,7 @@ export class MatchComponent implements OnInit {
         });
     } catch (error) {
       this.isUploading = false;
-      alert("Erreur lors de l'upload de l'image");
+      console.error('Erreur lors du téléchargement du fichier:', error);
     }
   }
 
@@ -138,7 +138,6 @@ export class MatchComponent implements OnInit {
   loadMatches() {
     this.loading.set(true);
     this.matchService.getTeams().subscribe((data) => {
-      console.log(data);
       this.teams.set(data);
     });
     this.matchService.getMatchesWithNames().subscribe({
@@ -214,21 +213,6 @@ export class MatchComponent implements OnInit {
       .subscribe(() => this.loadMatches());
   }
 
-  predict(matchId: string, scoreA: string, scoreB: string) {
-    const valA = parseInt(scoreA);
-    const valB = parseInt(scoreB);
-
-    if (isNaN(valA) || isNaN(valB)) {
-      alert('Veuillez entrer des scores valides.');
-      return;
-    }
-
-    this.matchService.savePrediction(matchId, valA, valB).subscribe({
-      next: () => this.toastService.show('Pronostic enregistré avec succès !', 'success'),
-      error: (err) => console.error('Erreur:', err),
-    });
-  }
-
   async onPredict(
     match: Match,
     sA: HTMLInputElement,
@@ -241,7 +225,7 @@ export class MatchComponent implements OnInit {
         match_id: match.id!,
         score_a: parseInt(sA.value),
         score_b: parseInt(sB.value),
-        proofUrl: pUrl.value,
+        proof_url: pUrl.value,
         timestamp: new Date(),
       })
       .subscribe({

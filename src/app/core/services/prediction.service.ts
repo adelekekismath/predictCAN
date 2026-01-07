@@ -26,10 +26,6 @@ export class PredictionService {
       updated_at: new Date()
     };
 
-    if (!PredictionRules.isProofValid({ proof_url: newPrediction.proof_url, timestamp: prediction.updated_at } as any)) {
-      return throwError(() => new Error("La preuve URL est obligatoire."));
-    }
-
     return from(
       this.supabase.supabase
         .from('predictions')
@@ -72,6 +68,15 @@ export class PredictionService {
         .select('*, profiles(username)')
         .eq('match_id', match.id)
     ).pipe(map(res => res.data || []));
+  }
+
+  deletePrediction(predictionId: string): Observable<any> {
+    return from(
+      this.supabase.supabase
+        .from('predictions')
+        .delete()
+        .eq('id', predictionId)
+    );
   }
 
   getPredictionByMatchAndUser(matchId: string, userId: string): Observable<any> {

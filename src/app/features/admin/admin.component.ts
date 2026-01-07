@@ -55,7 +55,6 @@ export class AdminComponent implements OnInit {
   }
 
   getPointsEarned(prediction: Prediction, match: any): number {
-    console.log(prediction)
     return PredictionRules.calculatePointsEarned(prediction, match);
   }
 

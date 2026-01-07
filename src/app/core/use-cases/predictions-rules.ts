@@ -61,11 +61,8 @@ export class PredictionRules {
    */
   static calculatePointsEarned(prediction: Prediction, match: Match): number {
 
-    console.log("Calculating points for prediction:", prediction);
-    console.log("Against match result:", match);
     const Ci = this.getPhaseCoefficient(match.stage!);
 
-    console.log("Ci:", Ci);
 
     // 1. Indicateurs de base
     const isResult = (prediction.score_a > prediction.score_b && match.score_a > match.score_b) ||

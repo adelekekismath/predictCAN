@@ -20,7 +20,7 @@ export const routes: Routes = [
    },
    {
     path: 'match',
-    loadComponent: () => import('./features/match/match.component').then(m => m.MatchComponent)
+    loadComponent: () => import('./features/match/match-list..component').then(m => m.MatchComponent)
    },
     {
       path: 'stats',

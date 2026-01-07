@@ -1,0 +1,18 @@
+<div class="p-4 rounded-2xl border-2 flex justify-between items-center"
+     [ngClass]="getPoints() > 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-gray-50 border-gray-100'">
+
+  <div>
+    <div class="text-xl font-black text-gray-800">{{ prono.score_a }} - {{ prono.score_b }}</div>
+
+    <p class="text-[9px] font-bold mt-1 uppercase" [class]="getPoints() > 0 ? 'text-emerald-600' : 'text-gray-400'">
+      @if (prono.score_a === match.score_a && prono.score_b === match.score_b) { 🎯 Score Exact }
+      @else if (Math.sign(prono.score_a - prono.score_b) === Math.sign(match.score_a - match.score_b)) { ✅ Vainqueur }
+      @else { ❌ Échec }
+    </p>
+  </div>
+
+  <div class="bg-indigo-600 text-white px-3 py-1 rounded-full text-center shadow-lg">
+    <div class="text-[7px] font-bold uppercase leading-none">Pts</div>
+    <div class="text-sm font-black">{{ getPoints() | number:'1.1-1' }}</div>
+  </div>
+</div>

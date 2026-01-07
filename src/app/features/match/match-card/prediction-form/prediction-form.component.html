@@ -1,0 +1,98 @@
+@if (!showForm()) {
+  <button
+    (click)="toggleForm()"
+    class="w-full py-3 border-2 border-dashed border-indigo-200 rounded-2xl text-indigo-600 text-[11px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:border-indigo-300 transition-all flex items-center justify-center gap-2"
+  >
+    <span class="text-lg">+</span>
+    Soumettre un prono
+  </button>
+
+} @else {
+  <div class="p-4 bg-white rounded-2xl border-2 border-indigo-100 space-y-4 animate-in fade-in zoom-in duration-300">
+
+    <div class="flex justify-between items-center">
+      <span class="text-[10px] font-black text-indigo-600 uppercase">Ton pronostic</span>
+      <button (click)="cancel()" class="text-[9px] font-bold text-gray-400 hover:text-red-500 uppercase">Annuler</button>
+    </div>
+
+
+    <div class="flex items-center justify-center gap-4 py-2">
+
+      <input type="number" [(ngModel)]="scoreA" min="0" placeholder="0" class="w-14 h-12 text-center text-xl font-black bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500">
+      <span class="text-gray-300 font-black">VS</span>
+      <input type="number" [(ngModel)]="scoreB" min="0" placeholder="0" class="w-14 h-12 text-center text-xl font-black bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500">
+    </div>
+
+    <div #ModeOptions class="flex items-center justify-center gap-4">
+      <button
+        (click)="setMode('amateur')"
+        [ngClass]="mode() === 'amateur' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+        class="px-4 py-2 rounded-xl text-xs font-black uppercase transition-colors"
+      >
+        Amateur
+      </button>
+      <button
+        (click)="setMode('expert')"
+        [ngClass]="mode() === 'expert' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+        class="px-4 py-2 rounded-xl text-xs font-black uppercase transition-colors"
+      >
+        Expert
+      </button>
+    </div>
+
+    @if (mode() === 'expert') {
+      <div class="border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center bg-gray-50/50 transition-all hover:border-indigo-200 hover:bg-indigo-50/30">
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        class="hidden"
+        accept="image/*"
+        #fileInput
+      >
+
+      @if (!selectedFile()) {
+        <button
+          type="button"
+          (click)="fileInput.click()"
+          class="text-[10px] font-black text-indigo-600 uppercase flex flex-col items-center gap-2 w-full"
+        >
+          <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-lg">📸</div>
+          <span>Joindre la preuve du prono</span>
+          <span class="text-[8px] text-gray-400 font-medium lowercase">(Image, capture d'écran...)</span>
+        </button>
+      } @else {
+        <div class="flex flex-col items-center gap-2 animate-in fade-in zoom-in duration-200">
+          <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-emerald-100 shadow-sm w-full">
+            <span class="text-emerald-500 text-sm">✅</span>
+            <span class="text-[9px] font-bold text-gray-700 truncate flex-1 text-left">
+              {{ selectedFile()?.name }}
+            </span>
+            <button
+              (click)="removeFile(); fileInput.value = ''"
+              class="text-gray-400 hover:text-red-500 transition-colors p-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <button
+            (click)="fileInput.click()"
+            class="text-[8px] font-black text-indigo-400 uppercase tracking-widest hover:text-indigo-600"
+          >
+            Modifier l'image
+          </button>
+        </div>
+      }
+    </div>
+    }
+
+    <button
+      (click)="submit()"
+      [disabled]="scoreA() === null || scoreB() === null || (mode() === 'expert' && !selectedFile())"
+      class="w-full bg-indigo-600 text-white py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-indigo-100 disabled:opacity-30 disabled:shadow-none transition-all"
+    >
+      Enregistrer le prono
+    </button>
+  </div>
+}

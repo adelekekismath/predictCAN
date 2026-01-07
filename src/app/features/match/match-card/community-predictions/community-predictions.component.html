@@ -1,0 +1,46 @@
+<button
+  (click)="toggle()"
+  class="mt-4 w-full py-2.5 border border-gray-200 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest hover:bg-gray-50 hover:text-indigo-600 hover:border-indigo-100 transition-all"
+>
+  {{ isOpen() ? 'Fermer les pronos' : 'Consulter les pronos communauté' }}
+</button>
+
+@if (isOpen()) {
+  <div class="mt-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+    <div class="flex justify-between items-center px-1">
+      <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
+        Pronostics validés
+      </h5>
+      <span class="text-[9px] font-bold text-indigo-400 bg-indigo-50 px-2 py-0.5 rounded-full">
+        {{ predictions.length }} participations
+      </span>
+    </div>
+
+    <div class="max-h-52 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+      @for (p of predictions; track p.profiles?.id) {
+        <div class="flex items-center justify-between bg-white p-2.5 rounded-2xl border border-gray-50 shadow-sm transition-hover hover:border-indigo-100">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center text-[10px] font-black text-indigo-600 border border-white">
+              {{ p.profiles?.name?.charAt(0) }}
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-[11px] font-black text-gray-700 leading-none">{{ p.profiles?.name }}</span>
+              @if(p.is_expert) {
+                <span class="text-[7px] font-bold text-amber-500 uppercase mt-0.5">🏆 Expert</span>
+              }
+            </div>
+          </div>
+
+          <div class="bg-indigo-600 text-white text-[12px] font-black px-3 py-1.5 rounded-xl shadow-sm shadow-indigo-100">
+            {{ p.score_a }} - {{ p.score_b }}
+          </div>
+        </div>
+      } @empty {
+        <div class="py-6 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-100">
+          <p class="text-[10px] text-gray-400 font-medium italic">Aucun pronostic à afficher.</p>
+        </div>
+      }
+    </div>
+  </div>
+}

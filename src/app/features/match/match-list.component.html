@@ -1,0 +1,46 @@
+<div class="max-w-5xl mx-auto p-6 bg-gray-50 min-h-screen">
+  <header class="mb-8 border-b pb-4">
+    <h2 class="text-3xl font-extrabold text-gray-900">Gestion des Matchs</h2>
+  </header>
+
+  @if (isAdmin()) {
+    <app-match-form [teams]="teams()" (submitted)="onSubmitNewMatch($event)" />
+  }
+
+  <div class="mt-10 space-y-12">
+    @for (status of statusOrder; track status) {
+      @let groupedMatches = getMatchesByStatus(status);
+
+      @if (groupedMatches.length > 0) {
+        <section>
+          <div class="relative flex items-center mb-6">
+            <div class="flex-grow border-t border-gray-200"></div>
+            <span class="flex-shrink mx-4 px-4 py-1 bg-white border border-gray-100 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-500 shadow-sm">
+              {{ getStatusLabel(status) }}
+            </span>
+            <div class="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            @for (match of groupedMatches; track match.id) {
+              <app-match-card
+                [match]="match"
+                [isAdmin]="isAdmin()"
+                [userProno]="getMatchPrediction(match.id)"
+                (scoreUpdate)="updateScore($event)"
+                (statusChange)="handleStatusChange($event)"
+                (deletePrediction)="deletePrediction($event)"
+                (addPrediction)="handleUploadAndSubmit($event)" 
+                (viewOtherPredictions)="viewOtherPredictions($event)"
+              />
+            }
+          </div>
+        </section>
+      }
+    } @empty {
+      <div class="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-200">
+        <p class="text-gray-400 font-medium">Aucun match disponible.</p>
+      </div>
+    }
+  </div>
+</div>

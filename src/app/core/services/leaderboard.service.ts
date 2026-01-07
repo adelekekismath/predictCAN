@@ -38,6 +38,24 @@ export class LeaderboardService {
     );
   }
 
+  loadLeaderboard(type: 'amateur' | 'expert') {
+  const table = type === 'expert' ? 'leaderboard_expert' : 'leaderboard_amateur';
+  return from(
+    this.supabase.supabase
+      .from(table)
+      .select('*')
+      .order('total_points', { ascending: false })
+  ).pipe(
+    map(({ data, error }) => {
+      if (error) {
+        console.error('Erreur lors de la récupération du classement:', error);
+        throw error;
+      }
+      return (data as LeaderboardEntry[]) || [];
+    })
+  );
+}
+
   /**
    * Optionnel : Récupère uniquement le rang d'un utilisateur spécifique
    */

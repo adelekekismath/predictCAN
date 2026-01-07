@@ -1,28 +1,45 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { LeaderboardService } from '../../core/services/leaderboard.service';
-import {DecimalPipe} from "@angular/common";
+import { Component, signal, OnInit, inject } from '@angular/core';
+import { SupabaseService } from '../../core/services/supabase.service';
+import { DecimalPipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-leaderboard',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, CommonModule],
   templateUrl: './leaderboard.component.html',
   styleUrl: './leaderboard.component.css'
 })
-
 export class LeaderboardComponent implements OnInit {
-  private leaderboardService = inject(LeaderboardService);
+  private supabase = inject(SupabaseService);
 
-  // Signal pour stocker les données du classement
+  // État du classement
+  mode = signal<'amateur' | 'expert'>('expert');
   ranking = signal<any[]>([]);
-  isLoading = signal(true);
+  isLoading = signal(false);
 
   ngOnInit() {
-    this.leaderboardService.getLeaderboard().subscribe({
-      next: (data) => {
-        this.ranking.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => this.isLoading.set(false)
-    });
+    this.fetchData();
+  }
+
+  setMode(newMode: 'amateur' | 'expert') {
+    this.mode.set(newMode);
+    this.fetchData();
+  }
+
+  async fetchData() {
+    this.isLoading.set(true);
+
+    // On sélectionne la vue correspondante selon le mode
+    const viewName = this.mode() === 'expert' ? 'leaderboard_expert' : 'leaderboard_amateur';
+
+    const { data, error } = await this.supabase.supabase
+      .from(viewName)
+      .select('*')
+      .order('total_points', { ascending: false });
+
+    if (!error && data) {
+      this.ranking.set(data);
+    }
+
+    this.isLoading.set(false);
   }
 }

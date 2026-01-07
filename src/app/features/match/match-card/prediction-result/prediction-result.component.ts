@@ -17,4 +17,6 @@ export class PredictionResultComponent {
   getPoints(): number {
     return PredictionRules.calculatePointsEarned(this.prono, this.match);
   }
+
+  
 }

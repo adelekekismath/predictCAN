@@ -25,6 +25,10 @@
         >
         {{ match.status }}
       </span>
+      <span
+        class="text-xs font-bold text-gray-400 uppercase">{{
+        match.stage
+      }}</span>
       <span class="text-xs font-bold text-gray-400 uppercase">{{
         match.kickoff_time | date : "dd MMM HH:mm"
       }}</span>

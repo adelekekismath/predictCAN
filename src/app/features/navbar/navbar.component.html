@@ -57,6 +57,7 @@
       class="md:hidden bg-slate-900 border-b border-white/10 px-4 pt-2 pb-6 space-y-4 absolute w-full left-0 animate-in fade-in slide-in-from-top-5 duration-200">
     @if(isAuthenticated()){
           <router-link routerLink="/match" class="block text-lg font-medium text-white hover:text-emerald-400 py-2">Matchs</router-link>
+        <router-link routerLink="/stats" class="block text-lg font-medium text-white hover:text-emerald-400 py-2">Mes stats</router-link>
         <router-link routerLink="/ranking" class="block text-lg font-medium text-white hover:text-emerald-400 py-2">Classement</router-link>
         }
       <button (click)="login()" class="w-full text-center py-3 text-slate-400 font-semibold">Connexion</button>

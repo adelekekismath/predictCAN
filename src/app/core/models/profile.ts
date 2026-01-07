@@ -4,8 +4,8 @@ export enum UserRole {
 }
 
 export interface Profile {
-  id: string; 
-  username: string;
+  id: string;
+  name: string;
   email: string;
   role: UserRole;
   createdAt?: Date;

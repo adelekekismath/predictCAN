@@ -6,6 +6,7 @@ import { PredictionService } from '../../core/services/prediction.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PredictionRules } from '../../core/use-cases/predictions-rules';
 import { CommonModule } from '@angular/common';
+import { Profile } from '../../core/models/profile';
 
 export interface PointHistory {
   matchDate: string;
@@ -27,6 +28,7 @@ export class StatsComponent {
 
   matches = signal<Match[]>([]);
   predictions = signal<Prediction[]>([]);
+  user = signal<Profile | null>(null);
 
   ngOnInit() {
     this.matchService.getMatchesWithNames().subscribe((matches) => {
@@ -38,8 +40,13 @@ export class StatsComponent {
       this.predictionService.getCurrentUserPredictions().subscribe((predictions) => {
         this.predictions.set(predictions);
       });
+      this.authService.currentUserProfile$ .subscribe((profile) => {
+        this.user.set(profile);
+      });
     }
   }
+
+  isExpert = computed(() => this.history().every(h => h.prono.proof_url !== ''));
 
   history = computed(() => {
     const userPredictions = this.predictions();

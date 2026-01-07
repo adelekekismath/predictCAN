@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { User } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable, map, tap, distinctUntilChanged, switchMap, of, from, catchError, shareReplay } from 'rxjs';
 import { SupabaseService } from './supabase.service';
+import { Profile } from '../models/profile';
+
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -88,5 +91,16 @@ export class AuthService {
 
   get currentUserId(): string | undefined {
     return this.currentUserSubject.value?.id;
+  }
+
+  get currentUserProfile$(): Observable<Profile | null> {
+    return from(
+      this.supabase.getTable('profiles')
+        .select('*')
+        .eq('id', this.currentUserId)
+        .single()
+    ).pipe(
+      map(response => response.data || null)
+    );
   }
 }

@@ -1,27 +1,46 @@
 <div class="mt-[80px] max-w-md mx-auto p-6 space-y-8 bg-gray-50 min-h-screen">
-  <div
-    class="bg-indigo-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden"
-  >
+
+  <div class="flex items-center justify-between px-2">
+    <div class="flex items-center gap-4">
+      <div class="relative">
+        <img
+          [src]="'https://ui-avatars.com/api/?background=6366f1&color=fff&name=' + user()?.name"
+          class="w-16 h-16 rounded-[2rem] border-4 border-white shadow-xl object-cover"
+        >
+        <div class="absolute -bottom-1 -right-1 bg-emerald-500 w-5 h-5 rounded-full border-4 border-gray-50"></div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-black text-gray-900 leading-tight">
+          {{ user()?.name || 'Utilisateur' }}
+        </h2>
+        <div class="flex gap-2 mt-1">
+          <span class="px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-600 text-[8px] font-black uppercase tracking-wider">
+            {{ isExpert() ? '⭐ Expert' : '⚽ Amateur' }}
+          </span>
+          <span class="px-2 py-0.5 rounded-lg bg-gray-200 text-gray-500 text-[8px] font-black uppercase tracking-wider">
+            ID: #{{ user()?.id?.slice(0, 5) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bg-indigo-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
     <div class="relative z-10">
-      <h1 class="text-sm font-bold opacity-80 uppercase tracking-tighter">
-        Mon Score Total
-      </h1>
+      <h1 class="text-sm font-bold opacity-80 uppercase tracking-tighter">Mon Score Total</h1>
       <div class="text-6xl font-black mt-2">
         {{ stats().totalPoints }} <span class="text-xl">pts</span>
       </div>
-
       <div class="grid grid-cols-3 gap-4 mt-8 border-t border-white/20 pt-6">
         <div class="text-center">
           <div class="text-xl font-black">{{ stats().exactScores }}</div>
-          <div class="text-[9px] opacity-70 uppercase font-bold">
-            Scores Exacts
-          </div>
+          <div class="text-[9px] opacity-70 uppercase font-bold">Scores Exacts</div>
         </div>
         <div class="text-center border-x border-white/20">
           <div class="text-xl font-black">{{ stats().correctWinners }}</div>
-          <div class="text-[9px] opacity-70 uppercase font-bold">
-            Vainqueurs
-          </div>
+          <div class="text-[9px] opacity-70 uppercase font-bold">Vainqueurs</div>
         </div>
         <div class="text-center">
           <div class="text-xl font-black">{{ stats().efficiency }}%</div>
@@ -29,9 +48,7 @@
         </div>
       </div>
     </div>
-    <div
-      class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"
-    ></div>
+    <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
   </div>
 
   <div class="space-y-4">

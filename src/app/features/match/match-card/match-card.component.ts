@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { TeamDisplayComponent } from './team-display/team-display.component';
 import { PredictionFormComponent } from './prediction-form/prediction-form.component';
 import { PredictionResultComponent } from './prediction-result/prediction-result.component';
@@ -22,13 +21,11 @@ import { ToastService } from '../../../core/services/toast.service';
   templateUrl: './match-card.component.html',
 })
 export class MatchCardComponent {
-  // --- ENTRÉES (Données venant du parent) ---
   @Input({ required: true }) match!: any;
   @Input() isAdmin: boolean = false;
   @Input() userProno: Prediction | null = null;
   @Input() othersPronos: any[] = [];
 
-  // --- SORTIES (Actions renvoyées au parent) ---
   @Output() statusChange = new EventEmitter<{ id: string, status: string }>();
   @Output() scoreUpdate = new EventEmitter<{ id: string, side: 'a' | 'b', change: number }>();
   @Output() deletePrediction = new EventEmitter<string>();
@@ -42,8 +39,6 @@ export class MatchCardComponent {
   }>();
 
   toastService = inject(ToastService);
-
-
 
   canPredict(match: any): boolean {
     if (match.status !== 'à venir') return false;
@@ -69,7 +64,6 @@ export class MatchCardComponent {
     this.viewOtherPredictions.emit(this.match.id);
   }
 
-  // --- MÉTHODES D'ACTION ---
 
   startMatch() {
     this.toastService.confirm('Voulez-vous démarrer ce match ? Les utilisateurs pourront alors voir les pronostics des autres.').then((confirmed) => {

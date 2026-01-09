@@ -39,12 +39,14 @@
         [name]="match.team_a_data.team_name_fr"
         [score]="match.score_a"
         [isAdmin]="isAdmin"
+        (change)="updateScore($event)
       />
       <div class="text-gray-300 italic font-black">VS</div>
       <app-team-display
         [name]="match.team_b_data.team_name_fr"
         [score]="match.score_b"
         [isAdmin]="isAdmin"
+        (change)="updateScore($event)
       />
     </div>
 

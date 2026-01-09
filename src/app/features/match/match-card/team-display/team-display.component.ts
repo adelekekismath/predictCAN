@@ -23,6 +23,6 @@ export class TeamDisplayComponent {
   @Input({ required: true }) name!: string;
   @Input({ required: true }) score!: number;
   @Input() isAdmin = false;
-  @Input() side = "";
-  @Output() change = new EventEmitter<'a' | 'b',number>();
+  @Input() side! : 'a'|'b';
+  @Output() change = new EventEmitter<{side:'a' | 'b',change:number}>();
 }

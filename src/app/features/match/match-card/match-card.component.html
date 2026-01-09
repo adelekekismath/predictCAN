@@ -40,7 +40,7 @@
         [score]="match.score_a"
         [isAdmin]="isAdmin"
         [side]="'a'"
-        (change)="updateScore($event.side, $event.change)
+        (change)="updateScore($event.side, $event.change)"
       />
       <div class="text-gray-300 italic font-black">VS</div>
       <app-team-display
@@ -48,11 +48,11 @@
         [score]="match.score_b"
         [side]="'b'"
         [isAdmin]="isAdmin"
-        (change)="updateScore($event.side, $event.change)
+        (change)="updateScore($event.side, $event.change)"
       />
     </div>
 
-    @if ( userProno && match.status === 'à venir' || match.status === 'en direct' ) {
+    @if ( userProno && (match.status === 'à venir' || match.status === 'en direct' )) {
     <div class="p-3 bg-indigo-600 rounded-xl text-white shadow-lg">
       <div class="flex justify-between items-center mb-1">
         <span class="text-[9px] font-bold uppercase opacity-80">Ton Prono</span>

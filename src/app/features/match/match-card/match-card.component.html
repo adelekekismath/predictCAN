@@ -40,7 +40,7 @@
         [score]="match.score_a"
         [isAdmin]="isAdmin"
         [side]="a"
-        (change)="updateScore($event)
+        (change)="updateScore($event.side, $event.change)
       />
       <div class="text-gray-300 italic font-black">VS</div>
       <app-team-display
@@ -48,7 +48,7 @@
         [score]="match.score_b"
         [side]="b"
         [isAdmin]="isAdmin"
-        (change)="updateScore($event)
+        (change)="updateScore($event.side, $event.change)
       />
     </div>
 

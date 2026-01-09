@@ -12,8 +12,8 @@ import { CommonModule } from '@angular/common';
 
       @if (isAdmin) {
         <div class="flex justify-center gap-1 mt-2">
-          <button (click)="change.emit(1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600 transition-colors">+</button>
-          <button (click)="change.emit(-1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600 transition-colors">-</button>
+          <button (click)="change.emit(side,1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600 transition-colors">+</button>
+          <button (click)="change.emit(side,-1)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 rounded font-bold text-gray-600 transition-colors">-</button>
         </div>
       }
     </div>
@@ -23,5 +23,6 @@ export class TeamDisplayComponent {
   @Input({ required: true }) name!: string;
   @Input({ required: true }) score!: number;
   @Input() isAdmin = false;
-  @Output() change = new EventEmitter<number>();
+  @Input() side = "";
+  @Output() change = new EventEmitter<'a' | 'b',number>();
 }

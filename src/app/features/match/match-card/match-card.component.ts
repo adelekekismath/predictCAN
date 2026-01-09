@@ -68,7 +68,7 @@ export class MatchCardComponent {
   startMatch() {
     this.toastService.confirm('Voulez-vous démarrer ce match ? Les utilisateurs pourront alors voir les pronostics des autres.').then((confirmed) => {
       if (confirmed) {
-        this.statusChange.emit({ id: this.match.id, status: 'en cours' });
+        this.statusChange.emit({ id: this.match.id, status: 'en direct' });
       }
     });
   }

@@ -49,45 +49,72 @@ export class MatchComponent implements OnInit {
   readonly statusOrder = ['en direct', 'à venir', 'terminé'];
 
 
-  async handleUploadAndSubmit(event: { match: Match, scoreA: number | null, scoreB: number | null, proofUrl: File | undefined }) {
-    const { match, scoreA, scoreB, proofUrl } = event;
-    const userId = this.authService.currentUserId;
+  async handleUploadAndSubmit(event: {
+  match: Match,
+  scoreA: number | null,
+  scoreB: number | null,
+  proofUrl: File | undefined
+}) {
+  const { match, scoreA, scoreB, proofUrl } = event;
+  const userId = this.authService.currentUserId;
 
-    if (!userId || scoreA === null || scoreB === null) {
-      this.toastService.show('Données manquantes pour le pronostic', 'error');
-      return;
-    }
-
-    try {
-      this.isUploading = true;
-      let finalProofPath = '';
-
-      if (proofUrl) {
-        finalProofPath = await firstValueFrom(this.supabase.uploadProof(proofUrl, userId)) || '';
-      }
-
-      const newPrediction: Prediction = {
-        id: '',
-        userId: userId,
-        match_id: match.id!,
-        score_a: scoreA,
-        score_b: scoreB,
-        proof_url: finalProofPath,
-        timestamp: new Date(),
-      };
-
-      await firstValueFrom(this.predictionService.submitPrediction(match, newPrediction));
-
-      this.toastService.show('Pronostic soumis avec succès !', 'success');
-      this.loadMyPredictions();
-
-    } catch (error) {
-      console.error('Erreur lors du traitement du pronostic:', error);
-      this.toastService.show('Une erreur est survenue lors de l\'envoi.', 'error');
-    } finally {
-      this.isUploading = false;
-    }
+  if (!userId || scoreA === null || scoreB === null) {
+    this.toastService.show('Données manquantes pour le pronostic', 'error');
+    return;
   }
+
+  try {
+    this.isUploading = true;
+    let finalProofPath = '';
+
+    if (proofUrl) {
+      // 🔒 Sanitize du nom de fichier (OBLIGATOIRE pour Supabase)
+      const sanitizedFileName = proofUrl.name
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // accents
+        .replace(/['"]/g, '')            // quotes
+        .replace(/\s+/g, '_')            // espaces → _
+        .replace(/[^a-zA-Z0-9._-]/g, '') // chars interdits
+        .toLowerCase();
+
+      // 🆕 Recréation du fichier avec un nom valide
+      const safeFile = new File(
+        [proofUrl],
+        sanitizedFileName,
+        { type: proofUrl.type }
+      );
+
+      finalProofPath =
+        (await firstValueFrom(
+          this.supabase.uploadProof(safeFile, userId)
+        )) || '';
+    }
+
+    const newPrediction: Prediction = {
+      id: '',
+      userId,
+      match_id: match.id!,
+      score_a: scoreA,
+      score_b: scoreB,
+      proof_url: finalProofPath,
+      timestamp: new Date(),
+    };
+
+    await firstValueFrom(
+      this.predictionService.submitPrediction(match, newPrediction)
+    );
+
+    this.toastService.show('Pronostic soumis avec succès !', 'success');
+    this.loadMyPredictions();
+
+  } catch (error) {
+    console.error('Erreur lors du traitement du pronostic:', error);
+    this.toastService.show('Une erreur est survenue lors de l\'envoi.', 'error');
+  } finally {
+    this.isUploading = false;
+  }
+}
+
 
   getMatchesByStatus(status: string) {
     return this.matches().filter(m => m.status === status);

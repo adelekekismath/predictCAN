@@ -141,6 +141,7 @@ export class MatchComponent implements OnInit {
 
   viewOtherPredictions(matchId: string) {
     this.predictionService.getAllOtherUsersPredictionsByMatch(matchId).subscribe(data => {
+      console.log(data);
       this.othersPredictions.set(data);
       this.selectedMatchId.set(matchId);
     });

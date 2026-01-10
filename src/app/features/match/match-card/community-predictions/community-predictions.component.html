@@ -17,7 +17,7 @@
     </div>
 
     <div class="max-h-52 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-      @for (p of predictions; track p.profiles?.id) {
+      @for (p of predictions; track p.id; let i = $index) {
         <div class="flex items-center justify-between bg-white p-2.5 rounded-2xl border border-gray-50 shadow-sm transition-hover hover:border-indigo-100">
           <div class="flex items-center gap-2">
             <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center text-[10px] font-black text-indigo-600 border border-white">

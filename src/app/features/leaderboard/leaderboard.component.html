@@ -74,7 +74,7 @@
       </div>
 
       <div class="divide-y divide-slate-50">
-        @for (player of ranking(); track player.profile_id; let i = $index) {
+        @for (player of ranking(); track player.user_id; ) {
           <div class="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
             <div class="flex items-center gap-4">
 

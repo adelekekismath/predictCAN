@@ -27,7 +27,7 @@
                 [match]="match"
                 [isAdmin]="isAdmin()"
                 [userProno]="getMatchPrediction(match.id)"
-                [othersPronos]="othersPredictions"
+                [othersPronos]="othersPredictions()"
                 (scoreUpdate)="updateScore($event)"
                 (statusChange)="handleStatusChange($event)"
                 (deletePrediction)="deletePrediction($event)"

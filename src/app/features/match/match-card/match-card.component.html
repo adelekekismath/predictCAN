@@ -61,7 +61,7 @@
           >Enregistré
         </span>
         <button
-          (click)="onDeleteProno(userProno?.id!)"
+          (click)="onDeleteProno(userProno.id!)"
           class="p-1.5 bg-red-500/20 hover:bg-red-500 text-white rounded-lg transition-all"
           title="Supprimer mon pronostic"
         >
@@ -71,7 +71,7 @@
         </button>
       </div>
       <div class="text-center text-2xl font-black">
-        {{ userProno?.score_a }} — {{ userProno?.score_b }}
+        {{ userProno.score_a }} — {{ userProno.score_b }}
       </div>
     </div>
     }

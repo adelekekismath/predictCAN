@@ -141,7 +141,6 @@ export class MatchComponent implements OnInit {
 
   viewOtherPredictions(matchId: string) {
     this.predictionService.getAllOtherUsersPredictionsByMatch(matchId).subscribe(data => {
-      console.log(data);
       this.othersPredictions.set(data);
       this.selectedMatchId.set(matchId);
     });
@@ -197,7 +196,6 @@ export class MatchComponent implements OnInit {
 
   onSubmitNewMatch(matchForm: FormGroup) {
     if (matchForm.valid && this.isAdmin()) {
-      console.log(matchForm.value);
       const newMatch = { ...matchForm.value, status: 'à venir' } as Partial<Match>;
 
       this.matchService.createMatch(newMatch).subscribe(() => {
